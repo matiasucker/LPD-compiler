@@ -3,14 +3,29 @@ package alr1;
 public class PPR extends Parser {
 
 	
-	public PPR(TS ts, Lexer3 lexer, Token t) {
-		super(ts, lexer, t);
+	public PPR(String arquivo) {
+		super();
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	@Override
 	public void parse() {
-		
+		analisaPrograma();
 		
 	}
+	
+	public boolean analisaPrograma() {
+		
+		
+		
+		
+		
+		
+		
+		return false;
+		
+	}
+	
+	
 	
 }

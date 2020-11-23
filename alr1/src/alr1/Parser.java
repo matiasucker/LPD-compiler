@@ -5,21 +5,22 @@ import java.io.IOException;
 public abstract class Parser {
 
 	TS ts;
-	Lexer3 lexer;
-	Token t;	
+	Lexer lexer;
+	Token token;	
 	
-	public Parser(TS ts, Lexer3 lexer, Token t) {
-		super();
-		this.ts = ts;
-		this.lexer = lexer;
-		this.t = t;
+	public Parser() {
+		ts = new TS();
+		lexer = new Lexer();
 	}
 
-	
 	public abstract void parse();
 	
+	public Token buscaToken() throws IOException {
+		token = lexer.buscaToken();
+		return token;
+	}
 	
-	t = lexer.buscaToken();
+	
 	
 	
 }
