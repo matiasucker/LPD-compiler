@@ -137,39 +137,39 @@ public class Lexer {
 				lech();
 				if (ch == '=') {
 					lexema += ch;
-					Token token = new Token(TipoToken.SATRIBUICAO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SATRIBUICAO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else {
 					devolve();
-					Token token = new Token(TipoToken.STIPO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.STIPO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 			}
 			else if (lexema.contentEquals(";")) {
-				Token token = new Token(TipoToken.SPONTO_E_VIRGULA, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SPONTO_E_VIRGULA, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
 			else if (lexema.contentEquals(",")) {
-				Token token = new Token(TipoToken.SVIRGULA, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SVIRGULA, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
 			else if (lexema.contentEquals(".")) {
-				Token token = new Token(TipoToken.SPONTO, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SPONTO, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
 			else if (lexema.contentEquals("(")) {
-				Token token = new Token(TipoToken.SABRE_PARENTESIS, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SABRE_PARENTESIS, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
 			else if (lexema.contentEquals(")")) {
-				Token token = new Token(TipoToken.SFECHA_PARENTESIS, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SFECHA_PARENTESIS, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
@@ -179,17 +179,17 @@ public class Lexer {
 			 * Operações Numéricas
 			 */
 			else if (lexema.contentEquals("+")) {
-				Token token = new Token(TipoToken.SMAIS, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SMAIS, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
 			else if (lexema.contentEquals("-")) {
-				Token token = new Token(TipoToken.SMENOS, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SMENOS, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
 			else if (lexema.contentEquals("*")) {
-				Token token = new Token(TipoToken.SMULTIPLICACAO, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SMULTIPLICACAO, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
@@ -204,7 +204,7 @@ public class Lexer {
 			 * Operações Relacionais
 			 */
 			else if (lexema.contentEquals("=")) {
-				Token token = new Token(TipoToken.SIGUAL, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SIGUAL, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
@@ -212,19 +212,19 @@ public class Lexer {
 				lech();
 				if (ch == '=') {
 					lexema += ch;
-					Token token = new Token(TipoToken.SMENORIGUAL, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SMENORIGUAL, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (ch == '>'){
 					lexema += ch;
-					Token token = new Token(TipoToken.SDIFERENTEDE, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SDIFERENTEDE, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else {
 					devolve();
-					Token token = new Token(TipoToken.SMENOR, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SMENOR, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -233,13 +233,13 @@ public class Lexer {
 				lech();
 				if (ch == '=') {
 					lexema += ch;
-					Token token = new Token(TipoToken.SMAIORIGUAL, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SMAIORIGUAL, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else {
 					devolve();
-					Token token = new Token(TipoToken.SMAIOR, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SMAIOR, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -265,7 +265,7 @@ public class Lexer {
 					lech();
 				}
 				devolve();
-				Token token = new Token(TipoToken.SNUMERO, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SNUMERO, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
@@ -288,34 +288,34 @@ public class Lexer {
 				if (lexema.contentEquals("programa")) {
 					pilha.push(lexema);
 					escopo = pilha.peek();
-					Token token = new Token(TipoToken.SPROGRAMA, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SPROGRAMA, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("var")) {
-					Token token = new Token(TipoToken.SVAR, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SVAR, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("inicio")) {
-					Token token = new Token(TipoToken.SINICIO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SINICIO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("fim")) {
 					pilha.pop();
 					escopo = pilha.peek();
-					Token token = new Token(TipoToken.SFIM, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SFIM, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("escreva")) {
-					Token token = new Token(TipoToken.SESCREVA, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SESCREVA, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("leia")) {
-					Token token = new Token(TipoToken.SLEIA, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SLEIA, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -324,22 +324,22 @@ public class Lexer {
 				 * Tipos de Dados
 				 */
 				else if (lexema.contentEquals("inteiro")) {
-					Token token = new Token(TipoToken.SINTEIRO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SINTEIRO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("booleano")) {
-					Token token = new Token(TipoToken.SBOOLEANO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SBOOLEANO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("verdadeiro")) {
-					Token token = new Token(TipoToken.SVERDADEIRO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SVERDADEIRO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("falso")) {
-					Token token = new Token(TipoToken.SFALSO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SFALSO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -348,17 +348,17 @@ public class Lexer {
 				 * Operações Lógicas
 				 */
 				else if (lexema.contentEquals("e")) {
-					Token token = new Token(TipoToken.SE, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SE, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("ou")) {
-					Token token = new Token(TipoToken.SOU, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SOU, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("nao")) {
-					Token token = new Token(TipoToken.SNAO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SNAO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -369,14 +369,14 @@ public class Lexer {
 				else if (lexema.contentEquals("procedimento")) {
 					pilha.push(lexema);
 					escopo = pilha.peek();
-					Token token = new Token(TipoToken.SPROCEDIMENTO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SPROCEDIMENTO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("funcao")) {
 					pilha.push(lexema);
 					escopo = pilha.peek();
-					Token token = new Token(TipoToken.SFUNCAO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SFUNCAO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -385,27 +385,27 @@ public class Lexer {
 				 * Decisões e Loop
 				 */
 				else if (lexema.contentEquals("se")) {
-					Token token = new Token(TipoToken.SSE, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SSE, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("entao")) {
-					Token token = new Token(TipoToken.SENTAO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SENTAO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("senao")) {
-					Token token = new Token(TipoToken.SSENAO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SSENAO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("enquanto")) {
-					Token token = new Token(TipoToken.SENQUANTO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SENQUANTO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (lexema.contentEquals("faca")) {
-					Token token = new Token(TipoToken.SFACA, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SFACA, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -414,7 +414,7 @@ public class Lexer {
 				 * Operação Numérica - DIVISÃO (continuação do item mais acima)
 				 */
 				else if (lexema.contentEquals("div")) {
-					Token token = new Token(TipoToken.SDIVISAO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SDIVISAO, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -424,7 +424,7 @@ public class Lexer {
 				 */
 				else {
 					
-					Token token = new Token(TipoToken.SIDENTIFICADOR, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SIDENTIFICADOR, lexema, linha, col);
 					lt.add(token);
 					
 					// Inserção na Tabela de Símbolos
@@ -438,7 +438,7 @@ public class Lexer {
 			
 			// Nenhuma correspondência encontrada conforme as regras
 			else {
-				Token token = new Token(TipoToken.SERRO, "", linha, coluna);
+				Token token = new Token(escopo, TipoToken.SERRO, "", linha, coluna);
 				lt.add(token);
 				return token;
 			}
@@ -446,7 +446,7 @@ public class Lexer {
 		} // Fim while
 		
 		// Nenhuma correspondência encontrada conforme as regras
-		Token token = new Token(TipoToken.SERRO, "", linha, coluna);
+		Token token = new Token(escopo, TipoToken.SERRO, "", linha, coluna);
 		lt.add(token);
 		return token;
 	}
@@ -463,14 +463,5 @@ public class Lexer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		// Ler todo o stream r
-		while (( ch = lech()) != '@') {
-			
-			buscaToken();
-		}
-		
-    
-
 	}
 }

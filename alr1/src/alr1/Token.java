@@ -2,13 +2,15 @@ package alr1;
 
 public class Token {
 
+	String      escopo;
 	TipoToken     tipo;
     String      lexema;
     int          linha;
     int         coluna;
 	
-    public Token(TipoToken tipo, String lexema, int linha, int coluna) {
+    public Token(String escopo, TipoToken tipo, String lexema, int linha, int coluna) {
 		super();
+		this.escopo = escopo;
 		this.tipo = tipo;
 		this.lexema = lexema;
 		this.linha = linha;
@@ -17,6 +19,6 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return "Token [tipo=" + tipo + ", lexema=" + lexema + ", linha=" + linha + ", coluna=" + coluna + "]";
+		return "Token [escopo=" + escopo + ", tipo=" + tipo + ", lexema=" + lexema + ", linha=" + linha + ", coluna=" + coluna + "]";
 	}    
 }
