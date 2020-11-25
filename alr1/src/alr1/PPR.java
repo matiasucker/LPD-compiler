@@ -206,7 +206,7 @@ public class PPR extends Parser {
 			chamada_procedimento();
 		}
 	}
-
+	
 	
 	private void analisa_leia() throws IOException {
 		// TODO Auto-generated method stub
@@ -375,7 +375,7 @@ public class PPR extends Parser {
 	}
 
 
-	private void analisa_expressao() {
+	private void analisa_expressao() throws IOException {
 		// TODO Auto-generated method stub
 		
 		analisa_expressao_simples();
@@ -384,8 +384,82 @@ public class PPR extends Parser {
 			analisa_expressao_simples();		
 		}
 	}
-
 	
+	
+	private void analisa_expressao_simples() throws IOException {
+		// TODO Auto-generated method stub
+		
+		if (token.tipo == TipoToken.SMAIS || token.tipo == TipoToken.SMENOS || token.tipo == TipoToken.SOU) {
+			buscaToken();
+			analisa_termo();
+		}
+	}
+	
+	
+	private void analisa_termo() throws IOException {
+		// TODO Auto-generated method stub
+		
+		analisa_fator();
+		while (token.tipo == TipoToken.SMULTIPLICACAO || token.tipo == TipoToken.SDIVISAO || token.tipo == TipoToken.SE) {
+			buscaToken();
+			analisa_fator();
+		}
+	}
+	
+	
+	private void analisa_fator() throws IOException {
+		// TODO Auto-generated method stub
+		
+		if (token.tipo == TipoToken.SIDENTIFICADOR) {
+			
+			
+			//analisa_chamada_funcao();
+		}
+		else if (token.tipo == TipoToken.SNUMERO) {
+			buscaToken();
+		}
+		else if (token.tipo == TipoToken.SNAO) {
+			buscaToken();
+			analisa_fator();
+		}
+		else if (token.tipo == TipoToken.SABRE_PARENTESIS) {
+			buscaToken();
+			analisa_expressao();
+			
+			if (token.tipo == TipoToken.SFECHA_PARENTESIS) {
+				buscaToken();
+			}
+			else {
+				System.out.println("ERRO");
+			}
+		}
+		else if (token.lexema.contentEquals("verdadeiro") || token.lexema.contentEquals("falso")) {
+			buscaToken();
+		}
+		else {
+			System.out.println("ERRO");
+		}
+	}
+	
+
+	private void analisa_atribuicao() throws IOException {
+		// TODO Auto-generated method stub
+		
+		buscaToken();
+		analisa_expressao();
+	}
+	
+	
+	private void chamada_procedimento() throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	private void chamada_funcao() throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }
