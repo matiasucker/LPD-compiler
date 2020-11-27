@@ -7,8 +7,10 @@ LPD = Linguagem de Programação Didática
 
 
 
-UniRitter
+*UniRitter
 
 Disciplina de Compiladores
 
 Professor e Mestre Roger Krolow
+
+Aluno Matias Ucker
