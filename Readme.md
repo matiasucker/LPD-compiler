@@ -7,7 +7,7 @@ LPD = Linguagem de Programação Didática
 
 
 
-*UniRitter
+UniRitter
 
 Disciplina de Compiladores
 
