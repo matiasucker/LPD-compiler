@@ -124,7 +124,7 @@ public class PPR extends Parser {
 				System.out.println("ERRO");
 			}
 			
-		} while (token.tipo != TipoToken.SDOISPONTOS);
+		} while (token.tipo == TipoToken.SDOISPONTOS);
 		
 		buscaToken();
 		analisa_tipo();
@@ -160,8 +160,8 @@ public class PPR extends Parser {
 				else {
 					System.out.println("ERRO");
 				}
-			}
 			buscaToken();
+			}
 		}
 		else {
 			System.out.println("ERRO");
@@ -389,7 +389,12 @@ public class PPR extends Parser {
 	private void analisa_expressao_simples() throws IOException {
 		// TODO Auto-generated method stub
 		
-		if (token.tipo == TipoToken.SMAIS || token.tipo == TipoToken.SMENOS || token.tipo == TipoToken.SOU) {
+		if (token.tipo == TipoToken.SMAIS || token.tipo == TipoToken.SMENOS) {
+			buscaToken();
+		}
+		analisa_termo();
+			
+		while ((token.tipo == TipoToken.SMAIS) || (token.tipo == TipoToken.SMENOS) || (token.tipo == TipoToken.SOU)) {
 			buscaToken();
 			analisa_termo();
 		}
