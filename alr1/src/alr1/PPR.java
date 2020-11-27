@@ -416,9 +416,18 @@ public class PPR extends Parser {
 		// TODO Auto-generated method stub
 		
 		if (token.tipo == TipoToken.SIDENTIFICADOR) {
-			
-			
-			//analisa_chamada_funcao();
+			Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
+			if (ts.ts.containsKey(chave)) {
+				if (ts.getAtributo(chave, "tipo") == TipoToken.SINTEIRO.toString() || ts.getAtributo(chave, "tipo") == TipoToken.SBOOLEANO.toString()) {
+					analisa_chamada_funcao();
+				}
+				else {
+					buscaToken();
+				}
+			}
+			else {
+				System.out.println("ERRO");
+			}
 		}
 		else if (token.tipo == TipoToken.SNUMERO) {
 			buscaToken();
@@ -461,7 +470,7 @@ public class PPR extends Parser {
 	}
 
 
-	private void chamada_funcao() throws IOException {
+	private void analisa_chamada_funcao() throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
