@@ -8,15 +8,27 @@ import java.io.InputStreamReader;
 import java.io.PushbackReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Stack;
 
 public class Lexer {
-
+	
 	/**
-	 * String para receber o tipo de escopo
+	 * Tabela de Simbolos
 	 */
-	String escopo;
+	TS ts;
+	
+	/**
+	 * Construtor do Lexer com injeção de dependência
+	 * @param ts
+	 */
+	public Lexer (TS ts) {
+			this.ts = ts;
+	}
+	
+	/**
+	 * Stream de leitura do arquivo fonte
+	 */
+	PushbackReader r;
 	
 	/**
 	 * Cria uma pilha para identificação do escopo
@@ -24,20 +36,14 @@ public class Lexer {
 	Stack<String> pilha = new Stack<String>();
 	
 	/**
+	 * String para receber o tipo de escopo
+	 */
+	String escopo;
+	
+	/**
 	 * Lista de tokens
 	 */
 	ArrayList<Token> lt = new ArrayList<Token>();
-	
-	/**
-	 * Tabela de simbolos implementado em Hashtable <chave, valor>
-	 */
-	Hashtable<Chave, Token> ts = new Hashtable<Chave, Token>();
-	
-	
-	/**
-	 * Stream de leitura do arquivo fonte
-	 */
-	PushbackReader r;
 	
 	/**
 	 * Código do caracter sendo analisado
@@ -79,7 +85,6 @@ public class Lexer {
 			else
 				coluna++;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return ch;
@@ -89,7 +94,6 @@ public class Lexer {
 		try {
 			r.unread(ch);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (ch == '\n')
@@ -103,8 +107,6 @@ public class Lexer {
 
 	
 	public Token buscaToken() throws IOException {
-		// TODO Auto-generated method stub
-		//return null;
 		
 		/**
 		 * Lexema sendo construído quando for um identificador ou palavra-chave
@@ -149,7 +151,7 @@ public class Lexer {
 				}
 			}
 			else if (lexema.contentEquals(";")) {
-				Token token = new Token(escopo, TipoToken.SPONTO_E_VIRGULA, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SPONTO_VIRGULA, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
@@ -164,12 +166,12 @@ public class Lexer {
 				return token;
 			}
 			else if (lexema.contentEquals("(")) {
-				Token token = new Token(escopo, TipoToken.SABRE_PARENTESIS, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SABRE_PARENTESES, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
 			else if (lexema.contentEquals(")")) {
-				Token token = new Token(escopo, TipoToken.SFECHA_PARENTESIS, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SFECHA_PARENTESES, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
@@ -189,7 +191,7 @@ public class Lexer {
 				return token;
 			}
 			else if (lexema.contentEquals("*")) {
-				Token token = new Token(escopo, TipoToken.SMULTIPLICACAO, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SMULT, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
@@ -204,7 +206,7 @@ public class Lexer {
 			 * Operações Relacionais
 			 */
 			else if (lexema.contentEquals("=")) {
-				Token token = new Token(escopo, TipoToken.SIGUAL, lexema, linha, col);
+				Token token = new Token(escopo, TipoToken.SIG, lexema, linha, col);
 				lt.add(token);
 				return token;
 			}
@@ -212,13 +214,13 @@ public class Lexer {
 				lech();
 				if (ch == '=') {
 					lexema += ch;
-					Token token = new Token(escopo, TipoToken.SMENORIGUAL, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SMENORIG, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
 				else if (ch == '>'){
 					lexema += ch;
-					Token token = new Token(escopo, TipoToken.SDIFERENTEDE, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SDIF, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -233,7 +235,7 @@ public class Lexer {
 				lech();
 				if (ch == '=') {
 					lexema += ch;
-					Token token = new Token(escopo, TipoToken.SMAIORIGUAL, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SMAIORIG, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -414,7 +416,7 @@ public class Lexer {
 				 * Operação Numérica - DIVISÃO (continuação do item mais acima)
 				 */
 				else if (lexema.contentEquals("div")) {
-					Token token = new Token(escopo, TipoToken.SDIVISAO, lexema, linha, col);
+					Token token = new Token(escopo, TipoToken.SDIV, lexema, linha, col);
 					lt.add(token);
 					return token;
 				}
@@ -432,7 +434,6 @@ public class Lexer {
 					ts.put(chave, token);
 					
 					return token;
-					
 				}
 			}
 			
@@ -460,8 +461,13 @@ public class Lexer {
 							new InputStreamReader (
 									new FileInputStream (arquivo), "US-ASCII")));
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		// Ler todo o stream r
+		while (( ch = lech()) != '@') {
+			
+			buscaToken();
 		}
 	}
 }

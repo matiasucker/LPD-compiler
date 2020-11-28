@@ -8,8 +8,5 @@ public class Main_PPR {
 		
 		PPR ppr = new PPR("src/prog1.lpd");
 		ppr.parse();
-		
-		
 	}
-	
 }

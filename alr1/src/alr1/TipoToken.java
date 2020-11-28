@@ -10,17 +10,17 @@ public enum TipoToken {
     STIPO,              //:
     SESCREVA,           //escreva
     SINTEIRO,           //inteiro
-    SPONTO_E_VIRGULA,   //;
+    SPONTO_VIRGULA,     //;
     SVIRGULA,           //,
     SPONTO,             //.
     SMAIS,              //+
     SMENOS,             //-
-    SMULTIPLICACAO,     //*
-    SDIVISAO,           ///
+    SMULT,              //*
+    SDIV,               //div
     SNUMERO,            //5
     SIDENTIFICADOR,     //x, teste
-    SABRE_PARENTESIS,   //(
-    SFECHA_PARENTESIS,  //)
+    SABRE_PARENTESES,   //(
+    SFECHA_PARENTESES,  //)
     SERRO,              //Usado para tokens não reconhecidos
     SPROCEDIMENTO,      //procedimento
     SFUNCAO,            //funcao
@@ -36,10 +36,10 @@ public enum TipoToken {
     SENTAO,             //entao             
     SFACA,              //faca
     SENQUANTO,          //enquanto
-    SIGUAL,             //=
-    SMENORIGUAL,        //<=
-    SDIFERENTEDE,       //<>
+    SIG,                //=
+    SMENORIG,           //<=
+    SDIF,               //<>
     SMENOR,             //<
-    SMAIORIGUAL,        //>=
+    SMAIORIG,           //>=
     SMAIOR              //>
 }

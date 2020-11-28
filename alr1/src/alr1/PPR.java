@@ -8,7 +8,6 @@ public class PPR extends Parser {
 	public PPR(String arquivo) throws IOException {
 		super();
 		lexer.analisa(arquivo);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -16,7 +15,6 @@ public class PPR extends Parser {
 		try {
 			analisaPrograma();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -31,7 +29,7 @@ public class PPR extends Parser {
 			if (token.tipo == TipoToken.SIDENTIFICADOR) {
 				buscaToken();
 				
-				if (token.tipo == TipoToken.SPONTO_E_VIRGULA) {
+				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
 					analisa_bloco();
 					
 					if (token.tipo == TipoToken.SPONTO) {
@@ -62,7 +60,6 @@ public class PPR extends Parser {
 	}
 
 	private void analisa_bloco() throws IOException {
-		// TODO Auto-generated method stub
 		
 		buscaToken();
 		
@@ -74,7 +71,6 @@ public class PPR extends Parser {
 
 	
 	private void analisa_et_variaveis() throws IOException {
-		// TODO Auto-generated method stub
 		
 		if (token.tipo == TipoToken.SVAR) {
 			buscaToken();
@@ -84,7 +80,7 @@ public class PPR extends Parser {
 				while (token.tipo == TipoToken.SIDENTIFICADOR) {
 					analisa_variaveis();
 					
-					if (token.tipo == TipoToken.SPONTO_E_VIRGULA) {
+					if (token.tipo == TipoToken.SPONTO_VIRGULA) {
 						buscaToken();
 					}
 					else {
@@ -100,7 +96,6 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_variaveis() throws IOException {
-		// TODO Auto-generated method stub
 		
 		do {
 			if (token.tipo == TipoToken.SIDENTIFICADOR) {
@@ -132,7 +127,6 @@ public class PPR extends Parser {
 
 	
 	private void analisa_tipo() throws IOException {
-		// TODO Auto-generated method stub
 		
 		if (token.tipo != TipoToken.SINTEIRO || token.tipo != TipoToken.SBOOLEANO) {
 			System.out.println("ERRO");
@@ -142,7 +136,6 @@ public class PPR extends Parser {
 
 	
 	private void analisa_comandos()  throws IOException {
-		// TODO Auto-generated method stub
 		
 		if (token.tipo == TipoToken.SINICIO) {
 			buscaToken();
@@ -150,7 +143,7 @@ public class PPR extends Parser {
 			
 			while (token.tipo != TipoToken.SFIM) {
 				
-				if (token.tipo == TipoToken.SPONTO_E_VIRGULA) {
+				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
 					buscaToken();
 					
 					if (token.tipo != TipoToken.SFIM) {
@@ -171,7 +164,6 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_comando_simples() throws IOException {
-		// TODO Auto-generated method stub
 		
 		if (token.tipo == TipoToken.SIDENTIFICADOR) {
 			analisa_atrib_chprocedimento();
@@ -195,7 +187,6 @@ public class PPR extends Parser {
 
 
 	private void analisa_atrib_chprocedimento() throws IOException {
-		// TODO Auto-generated method stub
 		
 		buscaToken();
 		
@@ -209,17 +200,16 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_leia() throws IOException {
-		// TODO Auto-generated method stub
 		
 		buscaToken();
 		
-		if (token.tipo == TipoToken.SABRE_PARENTESIS) {
+		if (token.tipo == TipoToken.SABRE_PARENTESES) {
 			buscaToken();
 			
 			if (token.tipo == TipoToken.SIDENTIFICADOR) {
 				buscaToken();
 				
-				if (token.tipo == TipoToken.SFECHA_PARENTESIS) {
+				if (token.tipo == TipoToken.SFECHA_PARENTESES) {
 					buscaToken();
 				}
 				else {
@@ -237,17 +227,16 @@ public class PPR extends Parser {
 	
 
 	private void analisa_escreva() throws IOException {
-		// TODO Auto-generated method stub
 		
 		buscaToken();
 		
-		if (token.tipo == TipoToken.SABRE_PARENTESIS) {
+		if (token.tipo == TipoToken.SABRE_PARENTESES) {
 			buscaToken();
 			
 			if (token.tipo == TipoToken.SIDENTIFICADOR) {
 				buscaToken();
 				
-				if (token.tipo == TipoToken.SFECHA_PARENTESIS) {
+				if (token.tipo == TipoToken.SFECHA_PARENTESES) {
 					buscaToken();
 				}
 				else {
@@ -265,7 +254,6 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_enquanto() throws IOException {
-		// TODO Auto-generated method stub
 		
 		buscaToken();
 		analisa_expressao();
@@ -281,7 +269,6 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_se() throws IOException {
-		// TODO Auto-generated method stub
 		
 		buscaToken();
 		analisa_expressao();
@@ -302,7 +289,6 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_subrotinas() throws IOException {
-		// TODO Auto-generated method stub
 		
 		while (token.tipo == TipoToken.SPROCEDIMENTO || token.tipo == TipoToken.SFUNCAO) {
 			
@@ -312,7 +298,7 @@ public class PPR extends Parser {
 			else {
 				analisa_declaracao_funcao();
 			}
-			if (token.tipo == TipoToken.SPONTO_E_VIRGULA) {
+			if (token.tipo == TipoToken.SPONTO_VIRGULA) {
 				buscaToken();
 			}
 			else {
@@ -323,14 +309,13 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_declaracao_procedimento() throws IOException {
-		// TODO Auto-generated method stub
 		
 		buscaToken();
 		
 		if (token.tipo == TipoToken.SIDENTIFICADOR) {
 			buscaToken();
 			
-			if (token.tipo == TipoToken.SPONTO_E_VIRGULA) {
+			if (token.tipo == TipoToken.SPONTO_VIRGULA) {
 				analisa_bloco();
 			}
 			else {
@@ -344,7 +329,6 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_declaracao_funcao() throws IOException {
-		// TODO Auto-generated method stub
 		
 		buscaToken();
 		
@@ -357,7 +341,7 @@ public class PPR extends Parser {
 				if (token.tipo == TipoToken.SINTEIRO || token.tipo == TipoToken.SBOOLEANO) {
 					buscaToken();
 					
-					if (token.tipo == TipoToken.SPONTO_E_VIRGULA) {
+					if (token.tipo == TipoToken.SPONTO_VIRGULA) {
 						analisa_bloco();
 					}
 				}
@@ -376,10 +360,9 @@ public class PPR extends Parser {
 
 
 	private void analisa_expressao() throws IOException {
-		// TODO Auto-generated method stub
 		
 		analisa_expressao_simples();
-		if (token.tipo == TipoToken.SMAIOR || token.tipo == TipoToken.SMAIORIGUAL || token.tipo == TipoToken.SIGUAL || token.tipo == TipoToken.SMENOR || token.tipo == TipoToken.SMENORIGUAL || token.tipo == TipoToken.SDIFERENTEDE) {
+		if (token.tipo == TipoToken.SMAIOR || token.tipo == TipoToken.SMAIORIG || token.tipo == TipoToken.SIG || token.tipo == TipoToken.SMENOR || token.tipo == TipoToken.SMENORIG || token.tipo == TipoToken.SDIF) {
 			buscaToken();
 			analisa_expressao_simples();		
 		}
@@ -387,7 +370,6 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_expressao_simples() throws IOException {
-		// TODO Auto-generated method stub
 		
 		if (token.tipo == TipoToken.SMAIS || token.tipo == TipoToken.SMENOS) {
 			buscaToken();
@@ -402,10 +384,9 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_termo() throws IOException {
-		// TODO Auto-generated method stub
 		
 		analisa_fator();
-		while (token.tipo == TipoToken.SMULTIPLICACAO || token.tipo == TipoToken.SDIVISAO || token.tipo == TipoToken.SE) {
+		while (token.tipo == TipoToken.SMULT || token.tipo == TipoToken.SDIV || token.tipo == TipoToken.SE) {
 			buscaToken();
 			analisa_fator();
 		}
@@ -413,11 +394,10 @@ public class PPR extends Parser {
 	
 	
 	private void analisa_fator() throws IOException {
-		// TODO Auto-generated method stub
 		
 		if (token.tipo == TipoToken.SIDENTIFICADOR) {
 			Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
-			if (ts.ts.containsKey(chave)) {
+			if (ts.containsKey(chave)) {
 				if (ts.getAtributo(chave, "tipo") == TipoToken.SINTEIRO.toString() || ts.getAtributo(chave, "tipo") == TipoToken.SBOOLEANO.toString()) {
 					analisa_chamada_funcao();
 				}
@@ -436,11 +416,11 @@ public class PPR extends Parser {
 			buscaToken();
 			analisa_fator();
 		}
-		else if (token.tipo == TipoToken.SABRE_PARENTESIS) {
+		else if (token.tipo == TipoToken.SABRE_PARENTESES) {
 			buscaToken();
 			analisa_expressao();
 			
-			if (token.tipo == TipoToken.SFECHA_PARENTESIS) {
+			if (token.tipo == TipoToken.SFECHA_PARENTESES) {
 				buscaToken();
 			}
 			else {
@@ -457,23 +437,23 @@ public class PPR extends Parser {
 	
 
 	private void analisa_atribuicao() throws IOException {
-		// TODO Auto-generated method stub
-		
 		buscaToken();
 		analisa_expressao();
 	}
 	
 	
 	private void chamada_procedimento() throws IOException {
-		// TODO Auto-generated method stub
-		
+		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
+		if (!ts.containsKey(chave)) {
+			System.out.println("ERRO");
+		}
 	}
 
 
 	private void analisa_chamada_funcao() throws IOException {
-		// TODO Auto-generated method stub
-		
+		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
+		if (!ts.containsKey(chave)) {
+			System.out.println("ERRO");
+		}	
 	}
-	
-	
 }

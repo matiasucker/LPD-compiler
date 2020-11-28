@@ -10,7 +10,7 @@ public abstract class Parser {
 	
 	public Parser() {
 		ts = new TS();
-		lexer = new Lexer();
+		lexer = new Lexer(ts);
 	}
 
 	public abstract void parse();
