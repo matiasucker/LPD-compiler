@@ -82,7 +82,7 @@ public class TS extends Hashtable<Chave, Token> {
 	
 	private void novaChave(Chave oldChave, Token token) {
 		Chave novaChave = new Chave(token.escopo, token.tipo, token.lexema);
-		this.addToken(novaChave, token);
+		this.put(novaChave, token);
 		this.remove(oldChave);
 	}
 }
