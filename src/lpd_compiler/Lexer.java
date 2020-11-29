@@ -22,7 +22,7 @@ public class Lexer {
 	 * @param ts
 	 */
 	public Lexer (TS ts) {
-			this.ts = ts;
+		this.ts = ts;
 	}
 	
 	/**
