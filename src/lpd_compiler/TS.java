@@ -25,11 +25,24 @@ public class TS extends Hashtable<Chave, Token> {
 		
 		Token token = this.get(chave);
 		
-		if (atributo.contentEquals("escopo")) token.escopo = valor;
-		else if (atributo.contentEquals("lexema")) token.lexema = valor;
-		else if (atributo.contentEquals("tipo")) token.tipo = TipoToken.valueOf(valor);
-		else if (atributo.contentEquals("linha")) token.linha = Integer.valueOf(valor);
-		else if (atributo.contentEquals("coluna")) token.coluna = Integer.valueOf(valor);
+		if (atributo.contentEquals("escopo")) {
+			token.escopo = valor;
+			novaChave(chave, token);
+		}
+		else if (atributo.contentEquals("lexema")) {
+			token.lexema = valor;
+			novaChave(chave, token);
+		}
+		else if (atributo.contentEquals("tipo")) {
+			token.tipo = TipoToken.valueOf(valor);
+			novaChave(chave, token);
+		}
+		else if (atributo.contentEquals("linha")) {
+			token.linha = Integer.valueOf(valor);
+		}
+		else if (atributo.contentEquals("coluna")) {
+			token.coluna = Integer.valueOf(valor);
+		}
 		else System.out.println("Erro, atributo nao encontrado");
 	}
 	
@@ -38,11 +51,29 @@ public class TS extends Hashtable<Chave, Token> {
 		
 		Token token = this.get(chave);
 		
-		if (atributo.contentEquals("escopo")) return chave.escopo;
-		else if (atributo.contentEquals("lexema")) return token.lexema;
-		else if (atributo.contentEquals("tipo")) return token.tipo.toString();
-		else if (atributo.contentEquals("linha")) return String.valueOf(token.linha);
-		else if (atributo.contentEquals("coluna")) return String.valueOf(token.coluna);
-		else return "Erro, atributo nao encontrado";
+		if (atributo.contentEquals("escopo")) {
+			return chave.escopo;
+		}
+		else if (atributo.contentEquals("lexema")) {
+			return token.lexema;
+		}
+		else if (atributo.contentEquals("tipo")) {
+			return token.tipo.toString();
+		}
+		else if (atributo.contentEquals("linha")) {
+			return String.valueOf(token.linha);
+		}
+		else if (atributo.contentEquals("coluna")) {
+			return String.valueOf(token.coluna);
+		}
+		else {
+			return "Erro, atributo nao encontrado";
+		}
+	}
+	
+	private void novaChave(Chave oldChave, Token token) {
+		Chave novaChave = new Chave(token.escopo, token.tipo, token.lexema);
+		this.addToken(novaChave, token);
+		this.remove(oldChave);
 	}
 }
