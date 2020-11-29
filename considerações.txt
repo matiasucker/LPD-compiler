@@ -1,0 +1,24 @@
+Como funciona
+
+
+
+
+Métodos em cada classe
+
+Lexer.java
+
+	analisa()
+
+	buscaToken()
+
+
+Parser.java
+
+	um
+	
+	dois
+	
+	
+PPR.java
+
+	
