@@ -204,7 +204,7 @@ public class PPR extends Parser {
 			analisa_atribuicao();
 		}
 		else {
-			chamada_procedimento();
+			analisa_chamada_procedimento();
 		}
 	}
 	
@@ -470,7 +470,7 @@ public class PPR extends Parser {
 	}
 	
 	
-	private void chamada_procedimento() throws IOException {
+	private void analisa_chamada_procedimento() throws IOException {
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 		if (!ts.containsKey(chave)) {
 			System.out.println("ERRO");
