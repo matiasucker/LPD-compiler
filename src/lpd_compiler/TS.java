@@ -16,8 +16,17 @@ public class TS extends Hashtable<Chave, Token> {
 	
 	// Metodo busca token
 	public Token getToken (Chave chave) {
-			
-		return this.get(chave);
+		if (this.containsKey(chave)) {
+			if (this.get(chave) != null) {
+				return this.get(chave);
+			}
+			else {
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
 	}
 	
 	// Metodo set atributo
