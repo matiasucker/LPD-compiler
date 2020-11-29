@@ -118,6 +118,9 @@ public class PPR extends Parser {
 						System.out.println("ERRO");
 					}
 				}
+				else {
+					System.out.println("ERRO");
+				}
 			}
 			else {
 				System.out.println("ERRO");
@@ -461,8 +464,22 @@ public class PPR extends Parser {
 		}	
 	}
 	
+	
 	private void insere_tabela() {
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 		ts.addToken(chave, token);
+	}
+	
+	
+	private boolean pesquisa_duplicvar_tabela() {
+		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
+		Token novoToken = ts.getToken(chave);
+		if (novoToken.lexema.equals(token.lexema)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		
 	}
 }
