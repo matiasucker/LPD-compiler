@@ -27,6 +27,7 @@ public class PPR extends Parser {
 			buscaToken();
 			
 			if (token.tipo == TipoToken.SIDENTIFICADOR) {
+				insere_tabela();
 				buscaToken();
 				
 				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
@@ -99,20 +100,23 @@ public class PPR extends Parser {
 		
 		do {
 			if (token.tipo == TipoToken.SIDENTIFICADOR) {
-				buscaToken();
-				
-				if (token.tipo == TipoToken.SVIRGULA || token.tipo == TipoToken.SDOISPONTOS ) {
+				if (!pesquisa_duplicvar_tabela()) {
+					insere_tabela();
+					buscaToken();
 					
-					if (token.tipo == TipoToken.SVIRGULA) {
-						buscaToken();
+					if (token.tipo == TipoToken.SVIRGULA || token.tipo == TipoToken.SDOISPONTOS ) {
 						
-						if (token.tipo == TipoToken.SDOISPONTOS) {
-							System.out.println("ERRO");
+						if (token.tipo == TipoToken.SVIRGULA) {
+							buscaToken();
+							
+							if (token.tipo == TipoToken.SDOISPONTOS) {
+								System.out.println("ERRO");
+							}
 						}
 					}
-				}
-				else {
-					System.out.println("ERRO");
+					else {
+						System.out.println("ERRO");
+					}
 				}
 			}
 			else {
@@ -455,5 +459,10 @@ public class PPR extends Parser {
 		if (!ts.containsKey(chave)) {
 			System.out.println("ERRO");
 		}	
+	}
+	
+	private void insere_tabela() {
+		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
+		ts.addToken(chave, token);
 	}
 }

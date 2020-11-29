@@ -9,8 +9,9 @@ public class TS extends Hashtable<Chave, Token> {
 	
 	// Metodo adiciona token
 	public void addToken (Chave chave, Token token) {
-		
-		this.put(chave, token);
+		if (!this.containsKey(chave)) {
+			this.put(chave, token);
+		}
 	}
 	
 	// Metodo busca token

@@ -3,8 +3,6 @@
 ## Compilador da Linguagem de Programção Didática
 
 
-Implementação de um parser descendente preditivo recursivo para a LPD.
-
 LPD = Linguagem de Programação Didática
 
 
@@ -21,6 +19,6 @@ Aluno Matias Ucker
 
 
 
-
+matias.ucker@gmail.com
 
 https://github.com/MatiasUcker/LPD_Compiler.git

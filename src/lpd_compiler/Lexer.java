@@ -431,7 +431,7 @@ public class Lexer {
 					
 					// Inserção na Tabela de Símbolos
 					Chave chave = new Chave(escopo, TipoToken.SIDENTIFICADOR, lexema);
-					ts.put(chave, token);
+					ts.addToken(chave, token);
 					
 					return token;
 				}
