@@ -20,5 +20,11 @@ public abstract class Parser {
 		return token;
 	}
 	
+	public boolean erro(Token token) {
+		System.out.println("ERRO no token: " + token.lexema + " | Linha: " + token.linha + " | Coluna: " + token.coluna);
+		
+		return false;
+	}
+	
 	
 }
