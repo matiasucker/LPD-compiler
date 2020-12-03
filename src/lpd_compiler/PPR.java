@@ -208,7 +208,7 @@ public class PPR extends Parser {
 			analisa_atribuicao();
 		}
 		else {
-			analisa_chamada_procedimento();
+			analisa_ch_proced_funcao();
 		}
 	}
 	
@@ -433,7 +433,7 @@ public class PPR extends Parser {
 			Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 			if (ts.containsKey(chave)) {
 				if (ts.getAtributo(chave, "tipo") == TipoToken.SINTEIRO.toString() || ts.getAtributo(chave, "tipo") == TipoToken.SBOOLEANO.toString()) {
-					analisa_chamada_funcao();
+					analisa_ch_proced_funcao();
 				}
 				else {
 					buscaToken();
@@ -478,20 +478,13 @@ public class PPR extends Parser {
 	}
 	
 	
-	private void analisa_chamada_procedimento() throws IOException {
+	private void analisa_ch_proced_funcao() throws IOException {
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 		if (!ts.containsKey(chave)) {
 			erroDeclar(token);
 		}
 	}
 
-
-	private void analisa_chamada_funcao() throws IOException {
-		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
-		if (!ts.containsKey(chave)) {
-			erroDeclar(token);
-		}	
-	}
 	
 	private boolean pesquisa_tabela() {
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
