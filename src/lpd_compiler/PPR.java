@@ -36,26 +36,26 @@ public class PPR extends Parser {
 					if (token.tipo == TipoToken.SPONTO) {
 						
 						if (lexer.ch == '@') {
-							System.out.println("sucesso");
+							System.out.println("Compilação executada com sucesso");
 						}
 						else {
-							System.out.println("ERRO");
+							erroToken(token, "@ = fim de arquivo");
 						}
 					}
 					else {
-						System.out.println("ERRO");
+						erroToken(token, TipoToken.SPONTO.toString());
 					}
 				}
 				else {
-					System.out.println("ERRO");
+					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 				}
 			}
 			else {
-				System.out.println("ERRO");
+				erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 			}
 		}
 		else {
-			System.out.println("ERRO");
+			erroToken(token, TipoToken.SPROGRAMA.toString());
 		}
 		return false;
 	}
@@ -85,12 +85,12 @@ public class PPR extends Parser {
 						buscaToken();
 					}
 					else {
-						System.out.println("ERRO");
+						erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 					}
 				}
 			}
 			else {
-				System.out.println("ERRO");
+				erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 			}
 		}
 	}	
@@ -110,20 +110,22 @@ public class PPR extends Parser {
 							buscaToken();
 							
 							if (token.tipo == TipoToken.SDOISPONTOS) {
-								System.out.println("ERRO");
+								erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 							}
 						}
 					}
 					else {
-						System.out.println("ERRO");
+						erroToken(token, TipoToken.SVIRGULA.toString());
+						System.out.println("-------- OU --------");
+						erroToken(token, TipoToken.SDOISPONTOS.toString());
 					}
 				}
 				else {
-					System.out.println("ERRO");
+					erroDuplic(token);
 				}
 			}
 			else {
-				System.out.println("ERRO");
+				erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 			}
 			
 		} while (token.tipo == TipoToken.SDOISPONTOS);
@@ -136,7 +138,9 @@ public class PPR extends Parser {
 	private void analisa_tipo() throws IOException {
 		
 		if (token.tipo != TipoToken.SINTEIRO || token.tipo != TipoToken.SBOOLEANO) {
-			System.out.println("ERRO");
+			erroToken(token, TipoToken.SINTEIRO.toString());
+			System.out.println("-------- OU --------");
+			erroToken(token, TipoToken.SBOOLEANO.toString());
 		}
 		else {
 			insere_tabela("tipo");
@@ -161,13 +165,13 @@ public class PPR extends Parser {
 					}
 				}
 				else {
-					System.out.println("ERRO");
+					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 				}
 			buscaToken();
 			}
 		}
 		else {
-			System.out.println("ERRO");
+			erroToken(token, TipoToken.SINICIO.toString());
 		}
 		
 	}	
@@ -224,19 +228,19 @@ public class PPR extends Parser {
 						buscaToken();
 					}
 					else {
-						System.out.println("ERRO");
+						erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
 					}
 				}
 				else {
-					System.out.println("ERRO");
+					erroDuplic(token);
 				}
 			}
 			else {
-				System.out.println("ERRO");
+				erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 			}
 		}
 		else {
-			System.out.println("ERRO");
+			erroToken(token, TipoToken.SABRE_PARENTESES.toString());
 		}
 	}
 	
@@ -257,16 +261,16 @@ public class PPR extends Parser {
 						buscaToken();
 					}
 					else {
-						System.out.println("ERRO");
+						erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
 					}
 				}
 			}
 			else {
-				System.out.println("ERRO");
+				erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 			}
 		}
 		else {
-			System.out.println("ERRO");
+			erroToken(token, TipoToken.SABRE_PARENTESES.toString());
 		}
 	}
 	
@@ -281,7 +285,7 @@ public class PPR extends Parser {
 			analisa_comando_simples();
 		}
 		else {
-			System.out.println("ERRO");
+			erroToken(token, TipoToken.SFACA.toString());
 		}
 	}
 	
@@ -301,7 +305,7 @@ public class PPR extends Parser {
 			}
 		}
 		else {
-			System.out.println("ERRO");
+			erroToken(token, TipoToken.SENTAO.toString());
 		}
 	}
 	
@@ -320,7 +324,7 @@ public class PPR extends Parser {
 				buscaToken();
 			}
 			else {
-				System.out.println("ERRO");
+				erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 			}
 		}
 	}
@@ -342,15 +346,15 @@ public class PPR extends Parser {
 					analisa_bloco();
 				}
 				else {
-					System.out.println("ERRO");
+					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 				}
 			}
 			else {
-				System.out.println("ERRO");
+				erroDuplic(token);
 			}
 		}
 		else {
-			System.out.println("ERRO");
+			erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 		}
 		// Desempilha ou volta nível
 	}
@@ -374,15 +378,17 @@ public class PPR extends Parser {
 					}
 				}
 				else {
-					System.out.println("ERRO");
+					erroToken(token, TipoToken.SINTEIRO.toString());
+					System.out.println("-------- OU --------");
+					erroToken(token, TipoToken.SBOOLEANO.toString());
 				}
 			}
 			else {
-				System.out.println("ERRO");
+				erroToken(token, TipoToken.SDOISPONTOS.toString());
 			}
 		}
 		else {
-			System.out.println("ERRO");
+			erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 		}
 	}
 
@@ -434,7 +440,7 @@ public class PPR extends Parser {
 				}
 			}
 			else {
-				System.out.println("ERRO");
+				erroDeclar(token);
 			}
 		}
 		else if (token.tipo == TipoToken.SNUMERO) {
@@ -452,14 +458,16 @@ public class PPR extends Parser {
 				buscaToken();
 			}
 			else {
-				System.out.println("ERRO");
+				erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
 			}
 		}
 		else if (token.lexema.contentEquals("verdadeiro") || token.lexema.contentEquals("falso")) {
 			buscaToken();
 		}
 		else {
-			System.out.println("ERRO");
+			erroToken(token, TipoToken.SVERDADEIRO.toString());
+			System.out.println("-------- OU --------");
+			erroToken(token, TipoToken.SFALSO.toString());
 		}
 	}
 	
@@ -473,7 +481,7 @@ public class PPR extends Parser {
 	private void analisa_chamada_procedimento() throws IOException {
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 		if (!ts.containsKey(chave)) {
-			System.out.println("ERRO");
+			erroDeclar(token);
 		}
 	}
 
@@ -481,7 +489,7 @@ public class PPR extends Parser {
 	private void analisa_chamada_funcao() throws IOException {
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 		if (!ts.containsKey(chave)) {
-			System.out.println("ERRO");
+			erroDeclar(token);
 		}	
 	}
 	
