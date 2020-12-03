@@ -14,11 +14,10 @@ Lexer.java
 
 Parser.java
 
-	um
+A função erroToken informa token que apresentou erro, com seu lexema,linha e coluna.
+E ainda informa como uma dica, o tipo de token que esperava naquela posição.
 	
-	dois
-	
-	
+
 PPR.java
 
 	
