@@ -1,0 +1,21 @@
+programa programa_teste;
+
+var x: booleano;
+	
+
+	procedimento procedimento_teste;
+	
+	var y: inteiro;
+	
+	inicio
+	
+	y := falso;
+	
+	fim;
+
+	
+inicio
+
+x := verdadeiro;
+
+fim.
