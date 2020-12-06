@@ -19,6 +19,12 @@ public class PPR extends Parser {
 		}
 	}
 	
+	
+	/**
+	 * ANALISADOR SINTÁTICO
+	 * @return
+	 * @throws IOException
+	 */
 	public boolean analisaPrograma() throws IOException {
 		
 		buscaToken();
@@ -62,7 +68,12 @@ public class PPR extends Parser {
 		}
 		return false;
 	}
-
+	
+	
+	/**
+	 * Analisa bloco : na ordem > 1 declaração de variáveis | 2 subrotinas | 3 comandos
+	 * @throws IOException
+	 */
 	private void analisa_bloco() throws IOException {
 		
 		buscaToken();
@@ -72,8 +83,12 @@ public class PPR extends Parser {
 		analisa_comandos();
 		
 	}
-
 	
+	
+	/**
+	 * Analisa etapa de declaração de variáveis : var (identificador) > analisa_variaveis
+	 * @throws IOException
+	 */
 	private void analisa_et_variaveis() throws IOException {
 		
 		if (token.tipo == TipoToken.SVAR) {
@@ -99,6 +114,10 @@ public class PPR extends Parser {
 	}	
 	
 	
+	/**
+	 * Analisa variáveis : var x : analisa_tipo
+	 * @throws IOException
+	 */
 	private void analisa_variaveis() throws IOException {
 		
 		do {
@@ -134,8 +153,12 @@ public class PPR extends Parser {
 		buscaToken();
 		analisa_tipo();
 	}
-
 	
+	
+	/**
+	 * Analisa tipo : INTEIRO | BOOLEANO
+	 * @throws IOException
+	 */
 	private void analisa_tipo() throws IOException {
 		
 		if (token.tipo != TipoToken.SINTEIRO && token.tipo != TipoToken.SBOOLEANO) {
@@ -145,8 +168,12 @@ public class PPR extends Parser {
 		
 		buscaToken();
 	}
-
-
+	
+	
+	/**
+	 * Analisa comandos : analisa_comando_simples
+	 * @throws IOException
+	 */
 	private void analisa_comandos()  throws IOException {
 		
 		if (token.tipo == TipoToken.SINICIO) {
@@ -232,6 +259,11 @@ public class PPR extends Parser {
 	}
 */
 	
+	
+	/**
+	 * Analisa comando simples: analisa_se | analisa_enquanto | analisa_leia | analisa_escreva | analisa_comandos
+	 * @throws IOException
+	 */
 	private void analisa_comando_simples() throws IOException {
 		
 		if (token.tipo == TipoToken.SIDENTIFICADOR) {
@@ -261,8 +293,12 @@ public class PPR extends Parser {
 			analisa_comandos();
 		}
 	}
-
-
+	
+	
+	/**
+	 * Analisa atribuição e chamada de procedimento ou função 
+	 * @throws IOException
+	 */
 	private void analisa_atrib_chprocedimento() throws IOException {
 		
 		buscaToken();
@@ -276,6 +312,10 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Analisa LEIA : leia ( identificador > variavel )
+	 * @throws IOException
+	 */
 	private void analisa_leia() throws IOException {
 		
 		buscaToken();
@@ -310,6 +350,10 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Analisa ESCREVA : escreva ( identificador > variavel )
+	 * @throws IOException
+	 */
 	private void analisa_escreva() throws IOException {
 		
 		buscaToken();
@@ -344,6 +388,10 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Analisa ENQUANTO : FAÇA
+	 * @throws IOException
+	 */
 	private void analisa_enquanto() throws IOException {
 		
 		buscaToken();
@@ -359,6 +407,10 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Analisa SE : ENTÃO | SENÃO
+	 * @throws IOException
+	 */
 	private void analisa_se() throws IOException {
 		
 		buscaToken();
@@ -379,6 +431,10 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Analisa subrotinas, que pode ser uma declaração de procedimento ou de uma função
+	 * @throws IOException
+	 */
 	private void analisa_subrotinas() throws IOException {
 		
 		while (token.tipo == TipoToken.SPROCEDIMENTO || token.tipo == TipoToken.SFUNCAO) {
@@ -399,6 +455,10 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Analisa declaração de Procedimeoto se existe na Tabela de Simbolos, sua inserção na TS e sua contrução "procedimento teste;"
+	 * @throws IOException
+	 */
 	private void analisa_declaracao_procedimento() throws IOException {
 		
 		buscaToken();
@@ -431,6 +491,10 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Analisa declaração de Função se existe na Tabela de Simbolos, sua inserção na TS e sua construção "funcao teste : booleano"
+	 * @throws IOException
+	 */
 	private void analisa_declaracao_funcao() throws IOException {
 		
 		buscaToken();
@@ -470,8 +534,12 @@ public class PPR extends Parser {
 		}
 		pilha.pop();
 	}
-
-
+	
+	
+	/**
+	 * Analisa expressão: MAIOR | MAIOR OU IGUAL | IGUAL | MENOR | MENOR OU IGUAL | DIFERENTE
+	 * @throws IOException
+	 */
 	private void analisa_expressao() throws IOException {
 		
 		analisa_expressao_simples();
@@ -482,6 +550,9 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Analisa expressão simples: MAIS | MENOS | OU
+	 */
 	private void analisa_expressao_simples() throws IOException {
 		
 		if (token.tipo == TipoToken.SMAIS || token.tipo == TipoToken.SMENOS) {
@@ -496,6 +567,10 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Analisa o termo se: MULTIPLICAÇÃO | DIVISÃO | E
+	 * @throws IOException
+	 */
 	private void analisa_termo() throws IOException {
 		
 		analisa_fator();
@@ -506,6 +581,9 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Analisa o fator se: INTEIRO | BOOLEANO | NUMERO | NAO | ABRE_PARENTESES | FECHA_PARENTESES | VERDADEIRO | FALSO
+	 */
 	private void analisa_fator() throws IOException {
 		
 		if (token.tipo == TipoToken.SIDENTIFICADOR) {
@@ -551,13 +629,20 @@ public class PPR extends Parser {
 		}
 	}
 	
-
+	
+	/**
+	 * Analisa a atribuição ":=" e analisa a expressão do lado direito da atribuição
+	 */
 	private void analisa_atribuicao() throws IOException {
 		buscaToken();
 		analisa_expressao();
 	}
 	
 	
+	/**
+	 * Analisa se um Procedimento ou uma função foi declarada no código e inserida na Tabela de Simbolos 
+	 * @throws IOException
+	 */
 	private void analisa_ch_proced_funcao() throws IOException {
 		token.escopo = pilha.peek();
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
@@ -568,6 +653,11 @@ public class PPR extends Parser {
 	}
 
 	
+	/**
+	 * Pesquisa se existe um token na Tabela de Simbolos
+	 * @param token
+	 * @return
+	 */
 	private boolean pesquisa_ts(Token token) {
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 		if (ts.containsKey(chave)) {
@@ -579,6 +669,10 @@ public class PPR extends Parser {
 	}
 	
 	
+	/**
+	 * Insere um token na Tabela de Simbolos
+	 * @param token
+	 */
 	private void insere_ts(Token token) {
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 		ts.addToken(chave, token);
