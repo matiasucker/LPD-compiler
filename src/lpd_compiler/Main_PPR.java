@@ -6,7 +6,7 @@ public class Main_PPR {
 
 	public static void main(String[] args) throws IOException {
 		
-		PPR ppr = new PPR("src/prog1.lpd");
+		PPR ppr = new PPR("teste.lpd");
 		ppr.parse();
 	}
 }
