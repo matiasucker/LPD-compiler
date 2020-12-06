@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 public class TS extends Hashtable<Chave, Token> {
 	
+	
 	private static final long serialVersionUID = 1L;
 	
 	
