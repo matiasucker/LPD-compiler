@@ -1,18 +1,22 @@
 package lpd_compiler;
 
 import java.io.IOException;
+import java.util.Stack;
 
 public abstract class Parser {
-
-	TS ts;
-	Lexer lexer;
-	Token token;	
 	
-	public Parser() {
+	TS ts;
+	Stack<String> pilha;
+	Lexer lexer;
+	Token token;
+	String escopo;
+	
+	public Parser(String arquivo) throws IOException {
 		ts = new TS();
-		lexer = new Lexer(ts);
+		pilha = new Stack<String>();
+		lexer = new Lexer(arquivo);
 	}
-
+	
 	public abstract void parse();
 	
 	public Token buscaToken() throws IOException {
@@ -21,20 +25,21 @@ public abstract class Parser {
 	}
 	
 	public boolean erroToken(Token token, String simbolo) {
-		System.out.println("ERRO no token: " + token.lexema + " | Linha: " + token.linha + " | Coluna: " + token.coluna);
-		System.out.println("Simbolo esperado: " + simbolo);
+		System.out.println("LPD ERROR token: " + token.lexema + " | Linha: " + token.linha + " | Coluna: " + token.coluna);
+		System.out.println("Tipo do token esperado: " + simbolo);
+		System.out.println("Tipo do token usado: " + token.tipo.toString() + "\n");
 		return false;
 	}
 	
 	public boolean erroDuplic(Token token) {
-		System.out.println("ERRO no token: " + token.lexema + " | Linha: " + token.linha + " | Coluna: " + token.coluna);
-		System.out.println("ERRO, declaração duplicada: " + token.tipo.toString());
+		System.out.println("LPD ERROR token: " + token.lexema + " | Linha: " + token.linha + " | Coluna: " + token.coluna);
+		System.out.println("Declaração duplicada do token: " + token.lexema + " | Tipo: " + token.tipo.toString() + "\n");
 		return false;
 	}
 
 	public boolean erroDeclar(Token token) {
-		System.out.println("ERRO no token: " + token.lexema + " | Linha: " + token.linha + " | Coluna: " + token.coluna);
-		System.out.println("ERRO, token não declarado: " + token.tipo.toString());	
+		System.out.println("LPD ERROR token: " + token.lexema + " | Linha: " + token.linha + " | Coluna: " + token.coluna);
+		System.out.println("Não foi declarado o token: " + token.lexema + " | Tipo: " + token.tipo.toString() + "\n");	
 		return false;
 	}
 }
