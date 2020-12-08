@@ -9,10 +9,9 @@ var x: booleano;
 	
 	inicio
 	
-	y := falso;
+	y := 1
 	
 	fim;
-
 	
 inicio
 

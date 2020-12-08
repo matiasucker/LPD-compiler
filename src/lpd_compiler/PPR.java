@@ -180,84 +180,55 @@ public class PPR extends Parser {
 			buscaToken();
 			analisa_comando_simples();
 			
-			if (token.tipo != TipoToken.SPONTO_VIRGULA) {
-				erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
-			}
-			
-			//if (token.tipo != TipoToken.SFIM) {
-				while (token.tipo != TipoToken.SFIM) {
-					
-					if (token.tipo == TipoToken.SPONTO_VIRGULA) {
-						buscaToken();
-						
-						if (token.tipo != TipoToken.SFIM) {
-							analisa_comando_simples();
-						}
-					}
-					else if (token.tipo == TipoToken.SPONTO) {
-						break;
-					}
-					else {
-						erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
-						break;
-					}
+			 do {
+				
+				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
 					buscaToken();
-					if (token.lexema.contentEquals("@")) {
-						break;
+					
+					if (token.tipo != TipoToken.SFIM) {
+						analisa_comando_simples();
 					}
 				}
-			//}
+				else {
+					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+				}
+				
+			} while (token.tipo != TipoToken.SFIM);
+			 
+			buscaToken();
 		}
 		else {
 			erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 		}
 	}
 	
-/**	
-	private void analisa_comandos()  throws IOException {
+
+	private void analisa_comando()  throws IOException {
 		
 		if (token.tipo == TipoToken.SINICIO) {
 			buscaToken();
+			analisa_comando_simples();
 			
-			if (token.tipo != TipoToken.SFIM) {
-				analisa_comando_simples();
-			
-				while (token.tipo != TipoToken.SFIM) {
+			while (token.tipo != TipoToken.SFIM) {
+				
+				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
+					buscaToken();
 					
-					if (token.tipo == TipoToken.SPONTO_VIRGULA) {
-						buscaToken();
-						
-						if (token.tipo != TipoToken.SFIM) {
-							analisa_comando_simples();
-						}
-						else {
-							buscaToken();
-							if (token.tipo != TipoToken.SPONTO) {
-								erroToken(token, TipoToken.SPONTO.toString());
-							}
-						}
-					}
-					else if (token.tipo == TipoToken.SFIM) {
-						buscaToken();
-					}
-					else {
-						erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
-						break;
+					if (token.tipo != TipoToken.SFIM) {
+						analisa_comando_simples();
 					}
 				}
-			}
-			else {
-				buscaToken();
-				if (token.tipo != TipoToken.SPONTO_VIRGULA) {
+				else {
 					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+					break;
 				}
+				buscaToken();
 			}
 		}
 		else {
-			erroToken(token, TipoToken.SINICIO.toString());
+			erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 		}
 	}
-*/
 	
 	
 	/**
