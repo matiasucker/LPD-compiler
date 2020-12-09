@@ -187,6 +187,10 @@ public class PPR extends Parser {
 					
 					if (token.tipo != TipoToken.SFIM && token.tipo != TipoToken.SINICIO) {
 						analisa_comando_simples();
+						
+						if (token.tipo != TipoToken.SPONTO_VIRGULA) {
+							errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+						}
 					}
 					else if (token.tipo == TipoToken.SINICIO) {
 						errorFree = erroToken(token, "Outra palavra reservada ou SIDENTIFICADOR");
