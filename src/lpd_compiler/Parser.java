@@ -10,11 +10,13 @@ public abstract class Parser {
 	Lexer lexer;
 	Token token;
 	String escopo;
+	boolean errorFree;
 	
 	public Parser(String arquivo) throws IOException {
 		ts = new TS();
 		pilha = new Stack<String>();
 		lexer = new Lexer(arquivo);
+		errorFree = true;
 	}
 	
 	public abstract void parse();

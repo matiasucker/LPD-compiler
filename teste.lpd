@@ -1,20 +1,13 @@
 programa programa_teste;
 
-var x: booleano;
-	
-
-	procedimento procedimento_teste;
-	
-	var y: inteiro;
-	
-	inicio
-	
-	y := 1
-	
-	fim;
+var a, b, c, d : inteiro;
 	
 inicio
 
-x := verdadeiro;
+leia ( a );
+
+	
+
+
 
 fim.

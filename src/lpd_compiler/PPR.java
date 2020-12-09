@@ -44,35 +44,36 @@ public class PPR extends Parser {
 					
 					if (token.tipo == TipoToken.SPONTO) {
 						buscaToken();
-						if (token.lexema.contentEquals("@")) {
+						if (token.lexema.contentEquals("@") && errorFree == true) {
 							System.out.println("Compilação executada com sucesso");
 						}
 						else {
-							erroToken(token, "@ = fim de arquivo");
+							errorFree = erroToken(token, "@ = fim de arquivo");
 						}
 					}
 					else {
-						erroToken(token, TipoToken.SPONTO.toString());
+						errorFree = erroToken(token, TipoToken.SPONTO.toString());
 					}
 				}
 				else {
-					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+					errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 				}
 			}
 			else {
-				erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+				errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 			}
 		}
 		else {
-			erroToken(token, TipoToken.SPROGRAMA.toString());
+			errorFree = erroToken(token, TipoToken.SPROGRAMA.toString());
 		}
 		return false;
 	}
 	
 	
 	/**
-	 * Analisa bloco : na ordem > 1 declaração de variáveis | 2 subrotinas | 3 comandos
-	 * @throws IOException
+	 * <bloco>::= [<etapa de declaração de variáveis>]
+	 * 			  [<etapa de declaração de sub-rotinas>]
+	 *            <comandos>
 	 */
 	private void analisa_bloco() throws IOException {
 		
@@ -86,8 +87,8 @@ public class PPR extends Parser {
 	
 	
 	/**
-	 * Analisa etapa de declaração de variáveis : var (identificador) > analisa_variaveis
-	 * @throws IOException
+	 * <etapa de declaração de variáveis>::= var <declaração de variáveis> ;
+	 *                                           {<declaração de variáveis>;}
 	 */
 	private void analisa_et_variaveis() throws IOException {
 		
@@ -103,20 +104,19 @@ public class PPR extends Parser {
 						buscaToken();
 					}
 					else {
-						erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+						errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 					}
 				}
 			}
 			else {
-				erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+				errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 			}
 		}
 	}	
 	
 	
 	/**
-	 * Analisa variáveis : var x : analisa_tipo
-	 * @throws IOException
+	 * <declaração de variáveis>::= <identificador> {, <identificador>} : <tipo>
 	 */
 	private void analisa_variaveis() throws IOException {
 		
@@ -135,16 +135,16 @@ public class PPR extends Parser {
 						}
 					}
 					else {
-						erroToken(token, TipoToken.SVIRGULA.toString());
-						erroToken(token, TipoToken.SDOISPONTOS.toString());
+						errorFree = erroToken(token, TipoToken.SVIRGULA.toString());
+						errorFree = erroToken(token, TipoToken.SDOISPONTOS.toString());
 					}
 				}
 				else {
-					erroDuplic(token);
+					errorFree = erroDuplic(token);
 				}
 			}
 			else {
-				erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+				errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 				break;
 			}
 		
@@ -156,14 +156,13 @@ public class PPR extends Parser {
 	
 	
 	/**
-	 * Analisa tipo : INTEIRO | BOOLEANO
-	 * @throws IOException
+	 * <tipo> ::= (inteiro | booleano)
 	 */
 	private void analisa_tipo() throws IOException {
 		
 		if (token.tipo != TipoToken.SINTEIRO && token.tipo != TipoToken.SBOOLEANO) {
-			erroToken(token, TipoToken.SINTEIRO.toString());
-			erroToken(token, TipoToken.SBOOLEANO.toString());
+			errorFree = erroToken(token, TipoToken.SINTEIRO.toString());
+			errorFree = erroToken(token, TipoToken.SBOOLEANO.toString());
 		}
 		
 		buscaToken();
@@ -171,8 +170,9 @@ public class PPR extends Parser {
 	
 	
 	/**
-	 * Analisa comandos : analisa_comando_simples
-	 * @throws IOException
+	 * <comandos>::= inicio
+	 *				 	<comando>{;<comando>}[;]
+	 *				 fim
 	 */
 	private void analisa_comandos()  throws IOException {
 		
@@ -185,12 +185,17 @@ public class PPR extends Parser {
 				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
 					buscaToken();
 					
-					if (token.tipo != TipoToken.SFIM) {
+					if (token.tipo != TipoToken.SFIM && token.tipo != TipoToken.SINICIO) {
 						analisa_comando_simples();
+					}
+					else if (token.tipo == TipoToken.SINICIO) {
+						errorFree = erroToken(token, "Outra palavra reservada ou SIDENTIFICADOR");
+						break;
 					}
 				}
 				else {
-					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+					errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+					break;
 				}
 				
 			} while (token.tipo != TipoToken.SFIM);
@@ -198,42 +203,18 @@ public class PPR extends Parser {
 			buscaToken();
 		}
 		else {
-			erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
-		}
-	}
-	
-
-	private void analisa_comando()  throws IOException {
-		
-		if (token.tipo == TipoToken.SINICIO) {
-			buscaToken();
-			analisa_comando_simples();
-			
-			while (token.tipo != TipoToken.SFIM) {
-				
-				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
-					buscaToken();
-					
-					if (token.tipo != TipoToken.SFIM) {
-						analisa_comando_simples();
-					}
-				}
-				else {
-					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
-					break;
-				}
-				buscaToken();
-			}
-		}
-		else {
-			erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+			errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 		}
 	}
 	
 	
 	/**
-	 * Analisa comando simples: analisa_se | analisa_enquanto | analisa_leia | analisa_escreva | analisa_comandos
-	 * @throws IOException
+	 * <comando>::= (<atribuição_chprocedimento>|
+	 *				<comando condicional> |
+	 *				<comando enquanto> |
+	 *				<comando leitura> |
+	 *				<comando escrita> |
+	 *				<comandos>)
 	 */
 	private void analisa_comando_simples() throws IOException {
 		
@@ -244,7 +225,7 @@ public class PPR extends Parser {
 				analisa_atrib_chprocedimento();
 			}
 			else {
-				erroDeclar(token);
+				errorFree = erroDeclar(token);
 			}
 			
 		}
@@ -267,8 +248,8 @@ public class PPR extends Parser {
 	
 	
 	/**
-	 * Analisa atribuição e chamada de procedimento ou função 
-	 * @throws IOException
+	 * <atribuição_chprocedimento>::= (<comando atribuicao>|
+	 *								  <chamada de procedimento ou função>)
 	 */
 	private void analisa_atrib_chprocedimento() throws IOException {
 		
@@ -278,14 +259,13 @@ public class PPR extends Parser {
 			analisa_atribuicao();
 		}
 		else {
-			analisa_ch_proced_funcao();
+			analisa_ch_procedimento();
 		}
 	}
 	
 	
 	/**
-	 * Analisa LEIA : leia ( identificador > variavel )
-	 * @throws IOException
+	 * <comando leitura> ::= leia ( <identificador> )
 	 */
 	private void analisa_leia() throws IOException {
 		
@@ -304,26 +284,25 @@ public class PPR extends Parser {
 						buscaToken();
 					}
 					else {
-						erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
+						errorFree = erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
 					}
 				}
 				else {
-					erroDeclar(token);
+					errorFree = erroDeclar(token);
 				}
 			}
 			else {
-				erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+				errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 			}
 		}
 		else {
-			erroToken(token, TipoToken.SABRE_PARENTESES.toString());
+			errorFree = erroToken(token, TipoToken.SABRE_PARENTESES.toString());
 		}
 	}
 	
 	
 	/**
-	 * Analisa ESCREVA : escreva ( identificador > variavel )
-	 * @throws IOException
+	 * <comando escrita> ::= escreva ( <identificador> )
 	 */
 	private void analisa_escreva() throws IOException {
 		
@@ -342,26 +321,25 @@ public class PPR extends Parser {
 						buscaToken();
 					}
 					else {
-						erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
+						errorFree = erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
 					}
 				}
 				else {
-					erroDeclar(token);
+					errorFree = erroDeclar(token);
 				}
 			}
 			else {
-				erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+				errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 			}
 		}
 		else {
-			erroToken(token, TipoToken.SABRE_PARENTESES.toString());
+			errorFree = erroToken(token, TipoToken.SABRE_PARENTESES.toString());
 		}
 	}
 	
 	
 	/**
-	 * Analisa ENQUANTO : FAÇA
-	 * @throws IOException
+	 * <comando enquanto> ::= enquanto <expressão> faca <comando>
 	 */
 	private void analisa_enquanto() throws IOException {
 		
@@ -373,14 +351,15 @@ public class PPR extends Parser {
 			analisa_comando_simples();
 		}
 		else {
-			erroToken(token, TipoToken.SFACA.toString());
+			errorFree = erroToken(token, TipoToken.SFACA.toString());
 		}
 	}
 	
 	
 	/**
-	 * Analisa SE : ENTÃO | SENÃO
-	 * @throws IOException
+	 * <comando condicional>::= se <expressão>
+	 *							entao <comando>
+	 *							[senao <comando>]
 	 */
 	private void analisa_se() throws IOException {
 		
@@ -397,14 +376,16 @@ public class PPR extends Parser {
 			}
 		}
 		else {
-			erroToken(token, TipoToken.SENTAO.toString());
+			errorFree = erroToken(token, TipoToken.SENTAO.toString());
 		}
 	}
 	
 	
 	/**
-	 * Analisa subrotinas, que pode ser uma declaração de procedimento ou de uma função
-	 * @throws IOException
+	 * <etapa de declaração de sub-rotinas> ::= (<declaração de procedimento>;|
+	 * 											<declaração de função>;)
+	 * 											{<declaração de procedimento>;|
+	 * 											<declaração de função>;}
 	 */
 	private void analisa_subrotinas() throws IOException {
 		
@@ -420,15 +401,15 @@ public class PPR extends Parser {
 				buscaToken();
 			}
 			else {
-				erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+				errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 			}
 		}
 	}
 	
 	
 	/**
-	 * Analisa declaração de Procedimeoto se existe na Tabela de Simbolos, sua inserção na TS e sua contrução "procedimento teste;"
-	 * @throws IOException
+	 * <declaração de procedimento> ::= procedimento <identificador>;
+	 *												 <bloco>
 	 */
 	private void analisa_declaracao_procedimento() throws IOException {
 		
@@ -448,23 +429,23 @@ public class PPR extends Parser {
 					analisa_bloco();
 				}
 				else {
-					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+					errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
 				}
 			}
 			else {
-				erroDuplic(token);
+				errorFree = erroDuplic(token);
 			}
 		}
 		else {
-			erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+			errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 		}
 		pilha.pop();
 	}
 	
 	
 	/**
-	 * Analisa declaração de Função se existe na Tabela de Simbolos, sua inserção na TS e sua construção "funcao teste : booleano"
-	 * @throws IOException
+	 * <declaração de função> ::= funcao <identificador>: <tipo>;
+	 *									 <bloco>
 	 */
 	private void analisa_declaracao_funcao() throws IOException {
 		
@@ -491,25 +472,24 @@ public class PPR extends Parser {
 						}
 					}
 					else {
-						erroToken(token, TipoToken.SINTEIRO.toString());
-						erroToken(token, TipoToken.SBOOLEANO.toString());
+						errorFree = erroToken(token, TipoToken.SINTEIRO.toString());
+						errorFree = erroToken(token, TipoToken.SBOOLEANO.toString());
 					}
 				}
 				else {
-					erroToken(token, TipoToken.SDOISPONTOS.toString());
+					errorFree = erroToken(token, TipoToken.SDOISPONTOS.toString());
 				}
 			}
 		}
 		else {
-			erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+			errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
 		}
 		pilha.pop();
 	}
 	
 	
 	/**
-	 * Analisa expressão: MAIOR | MAIOR OU IGUAL | IGUAL | MENOR | MENOR OU IGUAL | DIFERENTE
-	 * @throws IOException
+	 * <expressão>::= <expressão simples> [<operador relacional><expressão simples>]
 	 */
 	private void analisa_expressao() throws IOException {
 		
@@ -522,7 +502,7 @@ public class PPR extends Parser {
 	
 	
 	/**
-	 * Analisa expressão simples: MAIS | MENOS | OU
+	 * <expressão simples> ::= [ + | - ] <termo> {( + | - | ou) <termo> }
 	 */
 	private void analisa_expressao_simples() throws IOException {
 		
@@ -539,8 +519,7 @@ public class PPR extends Parser {
 	
 	
 	/**
-	 * Analisa o termo se: MULTIPLICAÇÃO | DIVISÃO | E
-	 * @throws IOException
+	 * <termo>::= <fator> {(* | div | e) <fator>}
 	 */
 	private void analisa_termo() throws IOException {
 		
@@ -553,33 +532,47 @@ public class PPR extends Parser {
 	
 	
 	/**
-	 * Analisa o fator se: INTEIRO | BOOLEANO | NUMERO | NAO | ABRE_PARENTESES | FECHA_PARENTESES | VERDADEIRO | FALSO
+	 * <fator> ::= (<variável> |
+	 *				<número> |
+	 *				<chamada de função> |
+	 *				(<expressão>) | 
+	 *				verdadeiro | falso
+	 *				nao <fator>)
+	 * 
 	 */
 	private void analisa_fator() throws IOException {
 		
+		// <variável>
 		if (token.tipo == TipoToken.SIDENTIFICADOR) {
 			token.escopo = pilha.peek();
 			Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 			
 			if (ts.containsKey(chave)) {
 				if (ts.getAtributo(chave, "tipo") == TipoToken.SINTEIRO.toString() || ts.getAtributo(chave, "tipo") == TipoToken.SBOOLEANO.toString()) {
-					analisa_ch_proced_funcao();
+					analisa_ch_funcao();
 				}
 				else {
 					buscaToken();
 				}
 			}
 			else {
-				erroDeclar(token);
+				errorFree = erroDeclar(token);
 			}
 		}
+		
+		// <número>
 		else if (token.tipo == TipoToken.SNUMERO) {
 			buscaToken();
 		}
-		else if (token.tipo == TipoToken.SNAO) {
-			buscaToken();
-			analisa_fator();
+		
+		// <chamada de função>
+		else if (token.tipo == TipoToken.SFUNCAO) {
+			
+			// TODO
+			
 		}
+		
+		// ( <expressão> )
 		else if (token.tipo == TipoToken.SABRE_PARENTESES) {
 			buscaToken();
 			analisa_expressao();
@@ -588,21 +581,32 @@ public class PPR extends Parser {
 				buscaToken();
 			}
 			else {
-				erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
+				errorFree = erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
 			}
 		}
+		
+		// <verdadeiro> | <falso>
 		else if (token.lexema.contentEquals("verdadeiro") || token.lexema.contentEquals("falso")) {
 			buscaToken();
 		}
+		
+		// <não>
+		else if (token.tipo == TipoToken.SNAO) {
+			buscaToken();
+			analisa_fator();
+		}
+		
 		else {
-			erroToken(token, TipoToken.SVERDADEIRO.toString());
-			erroToken(token, TipoToken.SFALSO.toString());
+			errorFree = erroToken(token, TipoToken.SVERDADEIRO.toString());
+			errorFree = erroToken(token, TipoToken.SFALSO.toString());
 		}
 	}
 	
 	
 	/**
-	 * Analisa a atribuição ":=" e analisa a expressão do lado direito da atribuição
+	 * 
+	 * <comando atribuicao>::= <identificador> := <expressão>
+	 * 
 	 */
 	private void analisa_atribuicao() throws IOException {
 		buscaToken();
@@ -611,23 +615,27 @@ public class PPR extends Parser {
 	
 	
 	/**
-	 * Analisa se um Procedimento ou uma função foi declarada no código e inserida na Tabela de Simbolos 
-	 * @throws IOException
+	 * <chamada de procedimento>::= <identificador>
 	 */
-	private void analisa_ch_proced_funcao() throws IOException {
+	private void analisa_ch_procedimento() throws IOException {
 		token.escopo = pilha.peek();
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 		
 		if (!ts.containsKey(chave)) {
-			erroDeclar(token);
+			errorFree = erroDeclar(token);
 		}
+	}
+	
+	
+	private void analisa_ch_funcao() throws IOException {
+		
+		// TODO
+		
 	}
 
 	
 	/**
 	 * Pesquisa se existe um token na Tabela de Simbolos
-	 * @param token
-	 * @return
 	 */
 	private boolean pesquisa_ts(Token token) {
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
@@ -642,11 +650,41 @@ public class PPR extends Parser {
 	
 	/**
 	 * Insere um token na Tabela de Simbolos
-	 * @param token
 	 */
 	private void insere_ts(Token token) {
 		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
 		ts.addToken(chave, token);
 		//ts.setAtributo(chave, "tipo", novoTipo.toString());
-	}	
+	}
+	
+
+/**
+	private void analisa_comando()  throws IOException {
+		
+		if (token.tipo == TipoToken.SINICIO) {
+			buscaToken();
+			analisa_comando_simples();
+			
+			while (token.tipo != TipoToken.SFIM) {
+				
+				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
+					buscaToken();
+					
+					if (token.tipo != TipoToken.SFIM) {
+						analisa_comando_simples();
+					}
+				}
+				else {
+					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+					break;
+				}
+				buscaToken();
+			}
+		}
+		else {
+			erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+		}
+	}
+*/
 }
+
