@@ -1,6 +1,6 @@
 package lpd_compiler;
 
-public enum TipoToken {
+public enum Simbolo {
 	SPROGRAMA,          //programa
     SVAR,               //var
     SDOISPONTOS,        //:

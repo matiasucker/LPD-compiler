@@ -28,21 +28,21 @@ public class PPR extends Parser {
 	public boolean analisaPrograma() throws IOException {
 		
 		buscaToken();
-		if (token.tipo == TipoToken.SPROGRAMA) {
+		if (token.simbolo == Simbolo.SPROGRAMA) {
 			buscaToken();
 			
-			if (token.tipo == TipoToken.SIDENTIFICADOR) {
+			if (token.simbolo == Simbolo.SIDENTIFICADOR) {
 				pilha.push(token.lexema);
 				token.escopo = pilha.peek();
-				Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
+				Chave chave = new Chave(token.escopo, token.simbolo, token.lexema);
 				ts.addToken(chave, token);
 				
 				buscaToken();
 				
-				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
+				if (token.simbolo == Simbolo.SPONTO_VIRGULA) {
 					analisa_bloco();
 					
-					if (token.tipo == TipoToken.SPONTO) {
+					if (token.simbolo == Simbolo.SPONTO) {
 						buscaToken();
 						if (token.lexema.contentEquals("@") && errorFree == true) {
 							System.out.println("Compilação executada com sucesso");
@@ -52,19 +52,19 @@ public class PPR extends Parser {
 						}
 					}
 					else {
-						errorFree = erroToken(token, TipoToken.SPONTO.toString());
+						errorFree = erroToken(token, Simbolo.SPONTO.toString());
 					}
 				}
 				else {
-					errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+					errorFree = erroToken(token, Simbolo.SPONTO_VIRGULA.toString());
 				}
 			}
 			else {
-				errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+				errorFree = erroToken(token, Simbolo.SIDENTIFICADOR.toString());
 			}
 		}
 		else {
-			errorFree = erroToken(token, TipoToken.SPROGRAMA.toString());
+			errorFree = erroToken(token, Simbolo.SPROGRAMA.toString());
 		}
 		return false;
 	}
@@ -92,24 +92,27 @@ public class PPR extends Parser {
 	 */
 	private void analisa_et_variaveis() throws IOException {
 		
-		if (token.tipo == TipoToken.SVAR) {
+		if (token.simbolo == Simbolo.SVAR) {
 			buscaToken();
 			
-			if (token.tipo == TipoToken.SIDENTIFICADOR) {
+			if (token.simbolo == Simbolo.SIDENTIFICADOR) {
 				
-				while (token.tipo == TipoToken.SIDENTIFICADOR) {
+				while (token.simbolo == Simbolo.SIDENTIFICADOR || token.lexema.contentEquals("var")) {
+					if (token.lexema.contentEquals("var")) {
+						buscaToken();
+					}
 					analisa_variaveis();
 					
-					if (token.tipo == TipoToken.SPONTO_VIRGULA) {
+					if (token.simbolo == Simbolo.SPONTO_VIRGULA) {
 						buscaToken();
 					}
 					else {
-						errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+						errorFree = erroToken(token, Simbolo.SPONTO_VIRGULA.toString());
 					}
 				}
 			}
 			else {
-				errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+				errorFree = erroToken(token, Simbolo.SIDENTIFICADOR.toString());
 			}
 		}
 	}	
@@ -120,23 +123,25 @@ public class PPR extends Parser {
 	 */
 	private void analisa_variaveis() throws IOException {
 		
+		lv.clear();
 		do {
-			if (token.tipo == TipoToken.SIDENTIFICADOR) {
-				token.tipo = TipoToken.SVAR;
+			if (token.simbolo == Simbolo.SIDENTIFICADOR) {
+				token.simbolo = Simbolo.SVAR;
 				token.escopo = pilha.peek();
 				if (!pesquisa_ts(token)) {
 					insere_ts(token);
+					lv.add(token);
 					buscaToken();
 					
-					if (token.tipo == TipoToken.SVIRGULA || token.tipo == TipoToken.SDOISPONTOS ) {
+					if (token.simbolo == Simbolo.SVIRGULA || token.simbolo == Simbolo.SDOISPONTOS ) {
 						
-						if (token.tipo == TipoToken.SVIRGULA) {
+						if (token.simbolo == Simbolo.SVIRGULA) {
 							buscaToken();
 						}
 					}
 					else {
-						errorFree = erroToken(token, TipoToken.SVIRGULA.toString());
-						errorFree = erroToken(token, TipoToken.SDOISPONTOS.toString());
+						errorFree = erroToken(token, Simbolo.SVIRGULA.toString());
+						errorFree = erroToken(token, Simbolo.SDOISPONTOS.toString());
 					}
 				}
 				else {
@@ -144,11 +149,11 @@ public class PPR extends Parser {
 				}
 			}
 			else {
-				errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+				errorFree = erroToken(token, Simbolo.SIDENTIFICADOR.toString());
 				break;
 			}
 		
-		} while (!(token.tipo == TipoToken.SDOISPONTOS));
+		} while (!(token.simbolo == Simbolo.SDOISPONTOS));
 		
 		buscaToken();
 		analisa_tipo();
@@ -160,9 +165,15 @@ public class PPR extends Parser {
 	 */
 	private void analisa_tipo() throws IOException {
 		
-		if (token.tipo != TipoToken.SINTEIRO && token.tipo != TipoToken.SBOOLEANO) {
-			errorFree = erroToken(token, TipoToken.SINTEIRO.toString());
-			errorFree = erroToken(token, TipoToken.SBOOLEANO.toString());
+		if (token.simbolo != Simbolo.SINTEIRO && token.simbolo != Simbolo.SBOOLEANO) {
+			errorFree = erroToken(token, Simbolo.SINTEIRO.toString());
+			errorFree = erroToken(token, Simbolo.SBOOLEANO.toString());
+		}
+		else {
+			for (Token t : lv) {
+				Chave chave = new Chave(t.escopo, t.simbolo, t.lexema);
+				ts.setAtributo(chave, "tipo", token.lexema);
+			}
 		}
 		
 		buscaToken();
@@ -176,38 +187,38 @@ public class PPR extends Parser {
 	 */
 	private void analisa_comandos()  throws IOException {
 		
-		if (token.tipo == TipoToken.SINICIO) {
+		if (token.simbolo == Simbolo.SINICIO) {
 			buscaToken();
 			analisa_comando_simples();
 			
 			 do {
 				
-				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
+				if (token.simbolo == Simbolo.SPONTO_VIRGULA) {
 					buscaToken();
 					
-					if (token.tipo != TipoToken.SFIM && token.tipo != TipoToken.SINICIO) {
+					if (token.simbolo != Simbolo.SFIM && token.simbolo != Simbolo.SINICIO) {
 						analisa_comando_simples();
 						
-						if (token.tipo != TipoToken.SPONTO_VIRGULA) {
-							errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+						if (token.simbolo != Simbolo.SPONTO_VIRGULA) {
+							errorFree = erroToken(token, Simbolo.SPONTO_VIRGULA.toString());
 						}
 					}
-					else if (token.tipo == TipoToken.SINICIO) {
+					else if (token.simbolo == Simbolo.SINICIO) {
 						errorFree = erroToken(token, "Outra palavra reservada ou SIDENTIFICADOR");
 						break;
 					}
 				}
 				else {
-					errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+					errorFree = erroToken(token, Simbolo.SPONTO_VIRGULA.toString());
 					break;
 				}
 				
-			} while (token.tipo != TipoToken.SFIM);
+			} while (token.simbolo != Simbolo.SFIM);
 			 
 			buscaToken();
 		}
 		else {
-			errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+			errorFree = erroToken(token, Simbolo.SPONTO_VIRGULA.toString());
 		}
 	}
 	
@@ -222,8 +233,8 @@ public class PPR extends Parser {
 	 */
 	private void analisa_comando_simples() throws IOException {
 		
-		if (token.tipo == TipoToken.SIDENTIFICADOR) {
-			token.tipo = TipoToken.SVAR;
+		if (token.simbolo == Simbolo.SIDENTIFICADOR) {
+			token.simbolo = Simbolo.SVAR;
 			token.escopo = pilha.peek();
 			if (pesquisa_ts(token)) {
 				analisa_atrib_chprocedimento();
@@ -233,16 +244,16 @@ public class PPR extends Parser {
 			}
 			
 		}
-		else if (token.tipo == TipoToken.SSE) {
+		else if (token.simbolo == Simbolo.SSE) {
 			analisa_se();
 		}
-		else if (token.tipo == TipoToken.SENQUANTO) {
+		else if (token.simbolo == Simbolo.SENQUANTO) {
 			analisa_enquanto();
 		}
-		else if (token.tipo == TipoToken.SLEIA) {
+		else if (token.simbolo == Simbolo.SLEIA) {
 			analisa_leia();
 		}
-		else if (token.tipo == TipoToken.SESCREVA) {
+		else if (token.simbolo == Simbolo.SESCREVA) {
 			analisa_escreva();
 		}
 		else {
@@ -257,9 +268,11 @@ public class PPR extends Parser {
 	 */
 	private void analisa_atrib_chprocedimento() throws IOException {
 		
+		variavelEsqAtrib = token;
+		
 		buscaToken();
 		
-		if (token.tipo == TipoToken.SATRIBUICAO) {
+		if (token.simbolo == Simbolo.SATRIBUICAO) {
 			analisa_atribuicao();
 		}
 		else {
@@ -275,20 +288,20 @@ public class PPR extends Parser {
 		
 		buscaToken();
 		
-		if (token.tipo == TipoToken.SABRE_PARENTESES) {
+		if (token.simbolo == Simbolo.SABRE_PARENTESES) {
 			buscaToken();
 			
-			if (token.tipo == TipoToken.SIDENTIFICADOR) {
-				token.tipo = TipoToken.SVAR;
+			if (token.simbolo == Simbolo.SIDENTIFICADOR) {
+				token.simbolo = Simbolo.SVAR;
 				token.escopo = pilha.peek();
 				if (pesquisa_ts(token)) {
 					buscaToken();
 					
-					if (token.tipo == TipoToken.SFECHA_PARENTESES) {
+					if (token.simbolo == Simbolo.SFECHA_PARENTESES) {
 						buscaToken();
 					}
 					else {
-						errorFree = erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
+						errorFree = erroToken(token, Simbolo.SFECHA_PARENTESES.toString());
 					}
 				}
 				else {
@@ -296,11 +309,11 @@ public class PPR extends Parser {
 				}
 			}
 			else {
-				errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+				errorFree = erroToken(token, Simbolo.SIDENTIFICADOR.toString());
 			}
 		}
 		else {
-			errorFree = erroToken(token, TipoToken.SABRE_PARENTESES.toString());
+			errorFree = erroToken(token, Simbolo.SABRE_PARENTESES.toString());
 		}
 	}
 	
@@ -312,20 +325,20 @@ public class PPR extends Parser {
 		
 		buscaToken();
 		
-		if (token.tipo == TipoToken.SABRE_PARENTESES) {
+		if (token.simbolo == Simbolo.SABRE_PARENTESES) {
 			buscaToken();
 			
-			if (token.tipo == TipoToken.SIDENTIFICADOR) {
-				token.tipo = TipoToken.SVAR;
+			if (token.simbolo == Simbolo.SIDENTIFICADOR) {
+				token.simbolo = Simbolo.SVAR;
 				token.escopo = pilha.peek();
 				if (pesquisa_ts(token)) {
 					buscaToken();
 					
-					if (token.tipo == TipoToken.SFECHA_PARENTESES) {
+					if (token.simbolo == Simbolo.SFECHA_PARENTESES) {
 						buscaToken();
 					}
 					else {
-						errorFree = erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
+						errorFree = erroToken(token, Simbolo.SFECHA_PARENTESES.toString());
 					}
 				}
 				else {
@@ -333,11 +346,11 @@ public class PPR extends Parser {
 				}
 			}
 			else {
-				errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+				errorFree = erroToken(token, Simbolo.SIDENTIFICADOR.toString());
 			}
 		}
 		else {
-			errorFree = erroToken(token, TipoToken.SABRE_PARENTESES.toString());
+			errorFree = erroToken(token, Simbolo.SABRE_PARENTESES.toString());
 		}
 	}
 	
@@ -350,12 +363,12 @@ public class PPR extends Parser {
 		buscaToken();
 		analisa_expressao();
 		
-		if (token.tipo == TipoToken.SFACA) {
+		if (token.simbolo == Simbolo.SFACA) {
 			buscaToken();
 			analisa_comando_simples();
 		}
 		else {
-			errorFree = erroToken(token, TipoToken.SFACA.toString());
+			errorFree = erroToken(token, Simbolo.SFACA.toString());
 		}
 	}
 	
@@ -370,17 +383,17 @@ public class PPR extends Parser {
 		buscaToken();
 		analisa_expressao();
 		
-		if (token.tipo == TipoToken.SENTAO) {
+		if (token.simbolo == Simbolo.SENTAO) {
 			buscaToken();
 			analisa_comando_simples();
 			
-			if (token.tipo == TipoToken.SSENAO) {
+			if (token.simbolo == Simbolo.SSENAO) {
 				buscaToken();
 				analisa_comando_simples();
 			}
 		}
 		else {
-			errorFree = erroToken(token, TipoToken.SENTAO.toString());
+			errorFree = erroToken(token, Simbolo.SENTAO.toString());
 		}
 	}
 	
@@ -393,19 +406,19 @@ public class PPR extends Parser {
 	 */
 	private void analisa_subrotinas() throws IOException {
 		
-		while (token.tipo == TipoToken.SPROCEDIMENTO || token.tipo == TipoToken.SFUNCAO) {
+		while (token.simbolo == Simbolo.SPROCEDIMENTO || token.simbolo == Simbolo.SFUNCAO) {
 			
-			if (token.tipo == TipoToken.SPROCEDIMENTO) {
+			if (token.simbolo == Simbolo.SPROCEDIMENTO) {
 				analisa_declaracao_procedimento();
 			}
 			else {
 				analisa_declaracao_funcao();
 			}
-			if (token.tipo == TipoToken.SPONTO_VIRGULA) {
+			if (token.simbolo == Simbolo.SPONTO_VIRGULA) {
 				buscaToken();
 			}
 			else {
-				errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+				errorFree = erroToken(token, Simbolo.SPONTO_VIRGULA.toString());
 			}
 		}
 	}
@@ -419,8 +432,8 @@ public class PPR extends Parser {
 		
 		buscaToken();
 		
-		if (token.tipo == TipoToken.SIDENTIFICADOR) {
-			token.tipo = TipoToken.SPROCEDIMENTO;
+		if (token.simbolo == Simbolo.SIDENTIFICADOR) {
+			token.simbolo = Simbolo.SPROCEDIMENTO;
 			pilha.push(token.lexema);
 			token.escopo = pilha.peek();
 			
@@ -429,11 +442,11 @@ public class PPR extends Parser {
 				
 				buscaToken();
 				
-				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
+				if (token.simbolo == Simbolo.SPONTO_VIRGULA) {
 					analisa_bloco();
 				}
 				else {
-					errorFree = erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
+					errorFree = erroToken(token, Simbolo.SPONTO_VIRGULA.toString());
 				}
 			}
 			else {
@@ -441,7 +454,7 @@ public class PPR extends Parser {
 			}
 		}
 		else {
-			errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+			errorFree = erroToken(token, Simbolo.SIDENTIFICADOR.toString());
 		}
 		pilha.pop();
 	}
@@ -455,8 +468,8 @@ public class PPR extends Parser {
 		
 		buscaToken();
 
-		if (token.tipo == TipoToken.SIDENTIFICADOR) {
-			token.tipo = TipoToken.SFUNCAO;
+		if (token.simbolo == Simbolo.SIDENTIFICADOR) {
+			token.simbolo = Simbolo.SFUNCAO;
 			pilha.push(token.lexema);
 			token.escopo = pilha.peek();
 			
@@ -465,28 +478,28 @@ public class PPR extends Parser {
 
 				buscaToken();
 				
-				if (token.tipo == TipoToken.SDOISPONTOS) {
+				if (token.simbolo == Simbolo.SDOISPONTOS) {
 					buscaToken();
 					
-					if (token.tipo == TipoToken.SINTEIRO || token.tipo == TipoToken.SBOOLEANO) {
+					if (token.simbolo == Simbolo.SINTEIRO || token.simbolo == Simbolo.SBOOLEANO) {
 						buscaToken();
 						
-						if (token.tipo == TipoToken.SPONTO_VIRGULA) {
+						if (token.simbolo == Simbolo.SPONTO_VIRGULA) {
 							analisa_bloco();
 						}
 					}
 					else {
-						errorFree = erroToken(token, TipoToken.SINTEIRO.toString());
-						errorFree = erroToken(token, TipoToken.SBOOLEANO.toString());
+						errorFree = erroToken(token, Simbolo.SINTEIRO.toString());
+						errorFree = erroToken(token, Simbolo.SBOOLEANO.toString());
 					}
 				}
 				else {
-					errorFree = erroToken(token, TipoToken.SDOISPONTOS.toString());
+					errorFree = erroToken(token, Simbolo.SDOISPONTOS.toString());
 				}
 			}
 		}
 		else {
-			errorFree = erroToken(token, TipoToken.SIDENTIFICADOR.toString());
+			errorFree = erroToken(token, Simbolo.SIDENTIFICADOR.toString());
 		}
 		pilha.pop();
 	}
@@ -498,7 +511,7 @@ public class PPR extends Parser {
 	private void analisa_expressao() throws IOException {
 		
 		analisa_expressao_simples();
-		if (token.tipo == TipoToken.SMAIOR || token.tipo == TipoToken.SMAIORIG || token.tipo == TipoToken.SIG || token.tipo == TipoToken.SMENOR || token.tipo == TipoToken.SMENORIG || token.tipo == TipoToken.SDIF) {
+		if (token.simbolo == Simbolo.SMAIOR || token.simbolo == Simbolo.SMAIORIG || token.simbolo == Simbolo.SIG || token.simbolo == Simbolo.SMENOR || token.simbolo == Simbolo.SMENORIG || token.simbolo == Simbolo.SDIF) {
 			buscaToken();
 			analisa_expressao_simples();		
 		}
@@ -510,12 +523,12 @@ public class PPR extends Parser {
 	 */
 	private void analisa_expressao_simples() throws IOException {
 		
-		if (token.tipo == TipoToken.SMAIS || token.tipo == TipoToken.SMENOS) {
+		if (token.simbolo == Simbolo.SMAIS || token.simbolo == Simbolo.SMENOS) {
 			buscaToken();
 		}
 		analisa_termo();
 			
-		while ((token.tipo == TipoToken.SMAIS) || (token.tipo == TipoToken.SMENOS) || (token.tipo == TipoToken.SOU)) {
+		while ((token.simbolo == Simbolo.SMAIS) || (token.simbolo == Simbolo.SMENOS) || (token.simbolo == Simbolo.SOU)) {
 			buscaToken();
 			analisa_termo();
 		}
@@ -528,7 +541,7 @@ public class PPR extends Parser {
 	private void analisa_termo() throws IOException {
 		
 		analisa_fator();
-		while (token.tipo == TipoToken.SMULT || token.tipo == TipoToken.SDIV || token.tipo == TipoToken.SE) {
+		while (token.simbolo == Simbolo.SMULT || token.simbolo == Simbolo.SDIV || token.simbolo == Simbolo.SE) {
 			buscaToken();
 			analisa_fator();
 		}
@@ -547,12 +560,12 @@ public class PPR extends Parser {
 	private void analisa_fator() throws IOException {
 		
 		// <variável>
-		if (token.tipo == TipoToken.SIDENTIFICADOR) {
+		if (token.simbolo == Simbolo.SIDENTIFICADOR) {
 			token.escopo = pilha.peek();
-			Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
+			Chave chave = new Chave(token.escopo, token.simbolo, token.lexema);
 			
 			if (ts.containsKey(chave)) {
-				if (ts.getAtributo(chave, "tipo") == TipoToken.SINTEIRO.toString() || ts.getAtributo(chave, "tipo") == TipoToken.SBOOLEANO.toString()) {
+				if (ts.getAtributo(chave, "tipo") == Simbolo.SINTEIRO.toString() || ts.getAtributo(chave, "tipo") == Simbolo.SBOOLEANO.toString()) {
 					analisa_ch_funcao();
 				}
 				else {
@@ -565,44 +578,63 @@ public class PPR extends Parser {
 		}
 		
 		// <número>
-		else if (token.tipo == TipoToken.SNUMERO) {
-			buscaToken();
-		}
-		
-		// <chamada de função>
-		else if (token.tipo == TipoToken.SFUNCAO) {
+		else if (token.simbolo == Simbolo.SNUMERO) {
+			Chave chave = new Chave(variavelEsqAtrib.escopo, variavelEsqAtrib.simbolo, variavelEsqAtrib.lexema);
 			
-			// TODO
-			
-		}
-		
-		// ( <expressão> )
-		else if (token.tipo == TipoToken.SABRE_PARENTESES) {
-			buscaToken();
-			analisa_expressao();
-			
-			if (token.tipo == TipoToken.SFECHA_PARENTESES) {
+			if (ts.getAtributo(chave, "tipo").contentEquals("inteiro")) {
 				buscaToken();
 			}
 			else {
-				errorFree = erroToken(token, TipoToken.SFECHA_PARENTESES.toString());
+				erroTipo(token, ts.getAtributo(chave, "tipo"));
+			}
+		}
+		
+		// <chamada de função>
+		else if (token.simbolo == Simbolo.SFUNCAO) {
+			token.escopo = pilha.peek();
+			Chave chave = new Chave(token.escopo, token.simbolo, token.lexema);			
+			if (ts.containsKey(chave)) {
+				analisa_ch_funcao();			
+			}
+			else {
+				errorFree = erroDeclar(token);
+			}
+		}
+		
+		// ( <expressão> )
+		else if (token.simbolo == Simbolo.SABRE_PARENTESES) {
+			buscaToken();
+			analisa_expressao();
+			
+			if (token.simbolo == Simbolo.SFECHA_PARENTESES) {
+				buscaToken();
+			}
+			else {
+				errorFree = erroToken(token, Simbolo.SFECHA_PARENTESES.toString());
 			}
 		}
 		
 		// <verdadeiro> | <falso>
 		else if (token.lexema.contentEquals("verdadeiro") || token.lexema.contentEquals("falso")) {
-			buscaToken();
+			Chave chave = new Chave(variavelEsqAtrib.escopo, variavelEsqAtrib.simbolo, variavelEsqAtrib.lexema);
+			
+			if (ts.getAtributo(chave, "tipo").contentEquals("booleano")) {
+				buscaToken();
+			}
+			else {
+				erroTipo(token, ts.getAtributo(chave, "tipo"));
+			}
 		}
 		
 		// <não>
-		else if (token.tipo == TipoToken.SNAO) {
+		else if (token.simbolo == Simbolo.SNAO) {
 			buscaToken();
 			analisa_fator();
 		}
 		
 		else {
-			errorFree = erroToken(token, TipoToken.SVERDADEIRO.toString());
-			errorFree = erroToken(token, TipoToken.SFALSO.toString());
+			errorFree = erroToken(token, Simbolo.SVERDADEIRO.toString());
+			errorFree = erroToken(token, Simbolo.SFALSO.toString());
 		}
 	}
 	
@@ -623,7 +655,7 @@ public class PPR extends Parser {
 	 */
 	private void analisa_ch_procedimento() throws IOException {
 		token.escopo = pilha.peek();
-		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
+		Chave chave = new Chave(token.escopo, token.simbolo, token.lexema);
 		
 		if (!ts.containsKey(chave)) {
 			errorFree = erroDeclar(token);
@@ -631,10 +663,15 @@ public class PPR extends Parser {
 	}
 	
 	
-	private void analisa_ch_funcao() throws IOException {
-		
-		// TODO
-		
+	private boolean analisa_ch_funcao() throws IOException {
+		token.escopo = pilha.peek();
+		Chave chave = new Chave(token.escopo, token.simbolo, token.lexema);
+		if (ts.containsKey(chave)) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	
@@ -642,7 +679,7 @@ public class PPR extends Parser {
 	 * Pesquisa se existe um token na Tabela de Simbolos
 	 */
 	private boolean pesquisa_ts(Token token) {
-		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
+		Chave chave = new Chave(token.escopo, token.simbolo, token.lexema);
 		if (ts.containsKey(chave)) {
 			return true;
 		}
@@ -656,11 +693,13 @@ public class PPR extends Parser {
 	 * Insere um token na Tabela de Simbolos
 	 */
 	private void insere_ts(Token token) {
-		Chave chave = new Chave(token.escopo, token.tipo, token.lexema);
+		Chave chave = new Chave(token.escopo, token.simbolo, token.lexema);
 		ts.addToken(chave, token);
 		//ts.setAtributo(chave, "tipo", novoTipo.toString());
 	}
 	
+	
+
 
 /**
 	private void analisa_comando()  throws IOException {

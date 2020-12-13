@@ -5,19 +5,19 @@ import java.util.Objects;
 public class Chave {
 	
 	String      escopo;
-	TipoToken     tipo;
+	Simbolo     simbolo;
     String      lexema;
 	
-    public Chave(String escopo, TipoToken tipo, String lexema) {
+    public Chave(String escopo, Simbolo simbolo, String lexema) {
 		super();
 		this.escopo = escopo;
-		this.tipo = tipo;
+		this.simbolo = simbolo;
 		this.lexema = lexema;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(escopo, lexema, tipo);
+		return Objects.hash(escopo, lexema, simbolo);
 	}
 
 	@Override
@@ -29,11 +29,11 @@ public class Chave {
 		if (getClass() != obj.getClass())
 			return false;
 		Chave other = (Chave) obj;
-		return Objects.equals(escopo, other.escopo) && Objects.equals(lexema, other.lexema) && tipo == other.tipo;
+		return Objects.equals(escopo, other.escopo) && Objects.equals(lexema, other.lexema) && simbolo == other.simbolo;
 	}
 
 	@Override
 	public String toString() {
-		return "Simbolo [escopo=" + escopo +", tipo=" + tipo + ", lexema=" + lexema + "]";
+		return "Simbolo [escopo=" + escopo +", tipo=" + simbolo + ", lexema=" + lexema + "]";
 	}
 }

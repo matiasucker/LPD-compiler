@@ -43,8 +43,8 @@ public class TS extends Hashtable<Chave, Token> {
 			token.lexema = valor;
 			novaChave(chave, token);
 		}
-		else if (atributo.contentEquals("tipo")) {
-			token.tipo = TipoToken.valueOf(valor);
+		else if (atributo.contentEquals("simbolo")) {
+			token.simbolo = Simbolo.valueOf(valor);
 			novaChave(chave, token);
 		}
 		else if (atributo.contentEquals("linha")) {
@@ -52,6 +52,9 @@ public class TS extends Hashtable<Chave, Token> {
 		}
 		else if (atributo.contentEquals("coluna")) {
 			token.coluna = Integer.valueOf(valor);
+		}
+		else if (atributo.contentEquals("tipo")) {
+			token.tipo = valor;
 		}
 		else System.out.println("Erro, atributo nao encontrado");
 	}
@@ -82,7 +85,7 @@ public class TS extends Hashtable<Chave, Token> {
 	}
 	
 	private void novaChave(Chave oldChave, Token token) {
-		Chave novaChave = new Chave(token.escopo, token.tipo, token.lexema);
+		Chave novaChave = new Chave(token.escopo, token.simbolo, token.lexema);
 		this.put(novaChave, token);
 		this.remove(oldChave);
 	}

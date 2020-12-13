@@ -1,16 +1,44 @@
 programa programa_teste;
 
 var a, b, c, d : inteiro;
+var m : booleano;
+
+
+{ procedimento proc1 }
+procedimento proc1;
 	
+	var a : inteiro;
+	var b : booleano;
+	
+	inicio
+	
+		a := 10;
+		b := falso;
+	
+	fim;
+	
+{ funcao func1 }
+funcao func1 : booleano;
+
+	var a : booleano;
+	
+	inicio
+	
+		a := verdadeiro;
+		escreva (a);
+		
+	fim;
+
 inicio
 
-leia ( a );
+	leia ( a );
 
-a := 1;
-b := 2;
-c := 3
-d := 4;
+	a := 1;
+	b := 2;
+	c := 3;
+	d := 4;
 
-
+	{b := a + b * c;}
+	escreva ( b );
 
 fim.
