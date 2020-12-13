@@ -715,36 +715,5 @@ public class PPR extends Parser {
 		//ts.setAtributo(chave, "tipo", novoTipo.toString());
 	}
 	
-	
-
-
-/**
-	private void analisa_comando()  throws IOException {
-		
-		if (token.tipo == TipoToken.SINICIO) {
-			buscaToken();
-			analisa_comando_simples();
-			
-			while (token.tipo != TipoToken.SFIM) {
-				
-				if (token.tipo == TipoToken.SPONTO_VIRGULA) {
-					buscaToken();
-					
-					if (token.tipo != TipoToken.SFIM) {
-						analisa_comando_simples();
-					}
-				}
-				else {
-					erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
-					break;
-				}
-				buscaToken();
-			}
-		}
-		else {
-			erroToken(token, TipoToken.SPONTO_VIRGULA.toString());
-		}
-	}
-*/
 }
 
