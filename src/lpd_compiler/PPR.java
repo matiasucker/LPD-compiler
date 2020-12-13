@@ -558,25 +558,42 @@ public class PPR extends Parser {
 	 * 
 	 */
 	private void analisa_fator() throws IOException {
-		
-		// <variável>
+	
+		// <variável> ou <função>
 		if (token.simbolo == Simbolo.SIDENTIFICADOR) {
+				
+			// <função>
+			Token f_token = new Token(token.escopo, token.simbolo, token.lexema, token.linha, token.coluna, token.tipo);
+			f_token.simbolo = Simbolo.SFUNCAO;
 			token.escopo = pilha.peek();
-			Chave chave = new Chave(token.escopo, token.simbolo, token.lexema);
+			Chave f_chave = new Chave(f_token.escopo, f_token.simbolo, f_token.lexema);
 			
-			if (ts.containsKey(chave)) {
-				if (ts.getAtributo(chave, "tipo") == Simbolo.SINTEIRO.toString() || ts.getAtributo(chave, "tipo") == Simbolo.SBOOLEANO.toString()) {
+			// <variável>
+			Token v_token = new Token(token.escopo, token.simbolo, token.lexema, token.linha, token.coluna, token.tipo);
+			v_token.simbolo = Simbolo.SVAR;
+			token.escopo = pilha.peek();
+			Chave v_chave = new Chave(v_token.escopo, v_token.simbolo, v_token.lexema);
+			
+			// <função>
+			if (ts.containsKey(f_chave)) {
+				if (ts.getAtributo(f_chave, "tipo") == Simbolo.SINTEIRO.toString() || ts.getAtributo(f_chave, "tipo") == Simbolo.SBOOLEANO.toString()) {
 					analisa_ch_funcao();
 				}
-				else {
-					buscaToken();
-				}
 			}
+				
+			// <variável>
+			else if (ts.containsKey(v_chave)) {
+				if (variavelEsqAtrib.tipo != v_token.tipo) {
+					errorFree = erroTipo(v_token, variavelEsqAtrib.tipo);
+				}
+				buscaToken();
+			}
+			
 			else {
 				errorFree = erroDeclar(token);
 			}
 		}
-		
+	
 		// <número>
 		else if (token.simbolo == Simbolo.SNUMERO) {
 			Chave chave = new Chave(variavelEsqAtrib.escopo, variavelEsqAtrib.simbolo, variavelEsqAtrib.lexema);
@@ -585,7 +602,7 @@ public class PPR extends Parser {
 				buscaToken();
 			}
 			else {
-				erroTipo(token, ts.getAtributo(chave, "tipo"));
+				errorFree = erroTipo(token, ts.getAtributo(chave, "tipo"));
 			}
 		}
 		

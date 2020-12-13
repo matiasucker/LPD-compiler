@@ -33,12 +33,11 @@ inicio
 
 	leia ( a );
 
-	a := 1;
-	b := 2;
+	a := 5;
+	b := 10;
 	c := 3;
-	d := 4;
 
-	{b := a + b * c;}
-	escreva ( b );
+	d :=  a + b div c;
+	escreva ( d );
 
 fim.

@@ -1,0 +1,40 @@
+		// <variável> ou <função>
+		if (token.simbolo == Simbolo.SIDENTIFICADOR) {
+
+
+
+			Token tokenVariavel = new Token(token.escopo, token.simbolo, token.lexema, token.linha, token.coluna, token.tipo);
+			Token tokenFuncao = new Token(token.escopo, token.simbolo, token.lexema, token.linha, token.coluna, token.tipo);
+			
+			// <variável>
+			tokenVariavel.simbolo = Simbolo.SVAR;
+			tokenVariavel.escopo = pilha.peek();
+			Chave chave = new Chave(tokenVariavel.escopo, tokenVariavel.simbolo, tokenVariavel.lexema);
+			if (ts.containsKey(chave)) {
+				if (variavelEsqAtrib.tipo != tokenVariavel.tipo) {
+					erroTipo(tokenVariavel, variavelEsqAtrib.tipo);
+				}
+			}
+
+/**	
+		
+			// <função>
+			tokenFuncao.simbolo = Simbolo.SFUNCAO;
+			tokenFuncao.escopo = pilha.peek();
+			Chave chave = new Chave(token.escopo, token.simbolo, token.lexema);
+			
+			if (ts.containsKey(chave)) {
+				if ()
+				if (ts.getAtributo(chave, "tipo") == Simbolo.SINTEIRO.toString() || ts.getAtributo(chave, "tipo") == Simbolo.SBOOLEANO.toString()) {
+					analisa_ch_funcao();
+				}
+			}
+			else {
+				errorFree = erroDeclar(token);
+			}
+		}
+		
+*/		
+		
+		
+		

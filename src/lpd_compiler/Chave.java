@@ -36,4 +36,9 @@ public class Chave {
 	public String toString() {
 		return "Simbolo [escopo=" + escopo +", tipo=" + simbolo + ", lexema=" + lexema + "]";
 	}
+	
+	public static Chave geraChave(Token chtoken) {
+		Chave chave = new Chave(chtoken.escopo, chtoken.simbolo, chtoken.lexema);
+		return chave;
+	}
 }
