@@ -11,14 +11,20 @@ public class PPR extends Parser {
 	}
 	
 	@Override
-	public void parse() {
+	public String parse() {
 		try {
 			analisaPrograma();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		salvaCodigo();
+		return codigo;
 	}
 	
+	public void salvaCodigo() {
+		CodIntermediario codIntermediario = new CodIntermediario(temp, codigo);
+		codIntermediario.geraLLVMIR();
+	}
 	
 	/**
 	 * ANALISADOR SINTÁTICO
@@ -521,30 +527,42 @@ public class PPR extends Parser {
 	/**
 	 * <expressão simples> ::= [ + | - ] <termo> {( + | - | ou) <termo> }
 	 */
-	private void analisa_expressao_simples() throws IOException {
+	private Token analisa_expressao_simples() throws IOException {
+		
+		Token t = new Token("", Simbolo.CODIGO, "", 0, 0, "");
 		
 		if (token.simbolo == Simbolo.SMAIS || token.simbolo == Simbolo.SMENOS) {
 			buscaToken();
 		}
-		analisa_termo();
+		Token t1 = analisa_termo();
 			
 		while ((token.simbolo == Simbolo.SMAIS) || (token.simbolo == Simbolo.SMENOS) || (token.simbolo == Simbolo.SOU)) {
 			buscaToken();
-			analisa_termo();
+			Token t2 = analisa_termo();
+			t.nome = geraTemp();
+			geraCod(t.nome + " = add i32 " + t1.nome + ", " + t2.nome);
 		}
+		
+		return t;
 	}
 	
 	
 	/**
 	 * <termo>::= <fator> {(* | div | e) <fator>}
 	 */
-	private void analisa_termo() throws IOException {
+	private Token analisa_termo() throws IOException {
 		
-		analisa_fator();
+		Token t = new Token("", Simbolo.CODIGO, "", 0, 0, "");
+		Token t1 = analisa_fator();
+		
 		while (token.simbolo == Simbolo.SMULT || token.simbolo == Simbolo.SDIV || token.simbolo == Simbolo.SE) {
 			buscaToken();
-			analisa_fator();
+			Token t2 = analisa_fator();
+			t.nome = geraTemp();
+			geraCod(t.nome + " = mul i32 " + t1.nome + ", " + t2.nome);
 		}
+		
+		return t;
 	}
 	
 	
@@ -557,7 +575,9 @@ public class PPR extends Parser {
 	 *				nao <fator>)
 	 * 
 	 */
-	private void analisa_fator() throws IOException {
+	private Token analisa_fator() throws IOException {
+		
+		Token t = new Token("", Simbolo.CODIGO, "", 0, 0, "");
 	
 		// <variável> ou <função>
 		if (token.simbolo == Simbolo.SIDENTIFICADOR) {
@@ -577,7 +597,12 @@ public class PPR extends Parser {
 			// <função>
 			if (ts.containsKey(f_chave)) {
 				if (ts.getAtributo(f_chave, "tipo") == Simbolo.SINTEIRO.toString() || ts.getAtributo(f_chave, "tipo") == Simbolo.SBOOLEANO.toString()) {
+					
+					// TODO gera código intermediário para função
 					analisa_ch_funcao();
+				}
+				else {
+					errorFree = erroTipo(token, ts.getAtributo(f_chave, "tipo"));
 				}
 			}
 				
@@ -586,6 +611,8 @@ public class PPR extends Parser {
 				if (variavelEsqAtrib.tipo != v_token.tipo) {
 					errorFree = erroTipo(v_token, variavelEsqAtrib.tipo);
 				}
+				
+				// TODO gera código intermediário para variável
 				buscaToken();
 			}
 			
@@ -599,6 +626,12 @@ public class PPR extends Parser {
 			Chave chave = new Chave(variavelEsqAtrib.escopo, variavelEsqAtrib.simbolo, variavelEsqAtrib.lexema);
 			
 			if (ts.getAtributo(chave, "tipo").contentEquals("inteiro")) {
+				
+				// Gera código para número
+				t.lexema = token.lexema;
+				t.codigo = token.lexema;
+				t.nome = geraTemp();
+				geraCod("store i32 " + t.lexema + ", i32* " + t.nome + ", align 4");
 				buscaToken();
 			}
 			else {
@@ -606,6 +639,7 @@ public class PPR extends Parser {
 			}
 		}
 		
+/**
 		// <chamada de função>
 		else if (token.simbolo == Simbolo.SFUNCAO) {
 			token.escopo = pilha.peek();
@@ -617,7 +651,8 @@ public class PPR extends Parser {
 				errorFree = erroDeclar(token);
 			}
 		}
-		
+*/
+	
 		// ( <expressão> )
 		else if (token.simbolo == Simbolo.SABRE_PARENTESES) {
 			buscaToken();
@@ -653,6 +688,8 @@ public class PPR extends Parser {
 			errorFree = erroToken(token, Simbolo.SVERDADEIRO.toString());
 			errorFree = erroToken(token, Simbolo.SFALSO.toString());
 		}
+		
+		return t;
 	}
 	
 	
@@ -713,6 +750,17 @@ public class PPR extends Parser {
 		Chave chave = new Chave(token.escopo, token.simbolo, token.lexema);
 		ts.addToken(chave, token);
 		//ts.setAtributo(chave, "tipo", novoTipo.toString());
+	}
+	
+	private String geraTemp() {
+		Integer i = temp++;
+		String nomeVar = '%' + i.toString();
+		geraCod(nomeVar + " = alloca i32, align 4");
+		return nomeVar;
+	}
+	
+	private void geraCod(String s) {
+		codigo += s + "\n";
 	}
 	
 }

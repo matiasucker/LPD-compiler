@@ -12,23 +12,14 @@ Professor e Mestre Roger Krolow
 Aluno Matias Ucker {matias.ucker@gmail.com}
 
 
-#### Requisitos mínimos
--
-
--
-
--
-
--
-
 
 #### Instruções para execução
-1.
+1. Clonar o diretório https://github.com/MatiasUcker/LPD_Compiler.git
 
-2.
+2. Abrir a IDE Eclipse
 
-3.
+3. Menu File / Import / Projects from Folder or Archive selecionando o diretório clone.
 
-4.
+4. Executar a classe MainPPR.java
 
 

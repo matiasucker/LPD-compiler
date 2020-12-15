@@ -14,7 +14,7 @@ procedimento proc1;
 	
 		a := 10;
 		b := falso;
-	
+		
 	fim;
 	
 { funcao func1 }
@@ -36,8 +36,8 @@ inicio
 	a := 5;
 	b := 10;
 	c := 3;
-
-	d :=  a + b div c;
+	
+	d :=  (a + (b * 2));
 	escreva ( d );
 
 fim.

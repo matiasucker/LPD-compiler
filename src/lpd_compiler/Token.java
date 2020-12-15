@@ -8,7 +8,11 @@ public class Token {
     int          linha;
     int         coluna;
     String        tipo;
+    
+    String        nome;
+    String      codigo;
 	
+    
     public Token(String escopo, Simbolo simbolo, String lexema, int linha, int coluna, String tipo) {
 		super();
 		this.escopo = escopo;

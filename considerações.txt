@@ -1,23 +1,23 @@
-Como funciona
 
 
+Foram implementados todos os métodos disponíveis na apostila de Compiladores do Autor Ricardo Luís de Freitas.
+
+Procedimento
+Função
+Laço
+Condicional
+etc....
 
 
-Métodos em cada classe
+Léxico está completo.
 
-Lexer.java
+Sintático está completo.
 
-	analisa()
+Semântico está completo.
 
-	buscaToken()
+Tratamento de erros completo, com todas as informações necessárias.
 
-
-Parser.java
-
-A função erroToken informa token que apresentou erro, com seu lexema,linha e coluna.
-E ainda informa como uma dica, o tipo de token que esperava naquela posição.
-	
-
-PPR.java
-
-	
+Geração de código LLVM IR parcial, apenas com operações de soma, subtração e multiplicação.
+Não compilei o arquivo com o gcc para saber como está o funcionamento do código intermediário por falta de tempo.
+Meu arquivo de teste é bastante extenso, me preocupei em fazer todas as implementações da apostila, 
+talvez mais uma semana fosse possível a implementação completa ou quase completa de um compilador em LPD com geração de código intermediário em LLVM IR.

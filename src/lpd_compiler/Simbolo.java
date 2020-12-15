@@ -41,5 +41,6 @@ public enum Simbolo {
     SDIF,               //<>
     SMENOR,             //<
     SMAIORIG,           //>=
-    SMAIOR              //>
+    SMAIOR,             //>
+    CODIGO              //codigo
 }

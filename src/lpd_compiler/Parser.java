@@ -13,6 +13,8 @@ public abstract class Parser {
 	Token token;               // Token conforme as regras da análise léxica
 	Token variavelEsqAtrib;    // variável para atribuição de valor <variavel := valor>
 	String escopo;             // escopo do token
+	String codigo;
+	Integer temp;
 	boolean errorFree;         // compilação
 	
 	public Parser(String arquivo) throws IOException {
@@ -21,9 +23,11 @@ public abstract class Parser {
 		lexer = new Lexer(arquivo);
 		lv = new ArrayList<Token>();
 		errorFree = true;
+		codigo = "";
+		temp = 1;
 	}
 	
-	public abstract void parse();
+	public abstract String parse();
 	
 	public Token buscaToken() throws IOException {
 		token = lexer.buscaToken();
